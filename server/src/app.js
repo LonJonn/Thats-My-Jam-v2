@@ -17,15 +17,18 @@ mongodb_conn_module.connect();	//connect to mongo database
 var Post = require("../models/post");	//get the Post model schema (so it knows how to structure its db entry)
 
 app.get('/get_files', (req, res) => {
-	fs.readdir(path.join(__dirname, '../static/download'), (err, files) => {
-		res.send(files)
+	fs.readdir(path.join(__dirname, '../static/files'), (err, files) => {
+		let filesClean = new Array
+		files.forEach( file => {
+			if (!file.startsWith('.')) filesClean.push(file)
+		})
+		res.send(filesClean)
 	})
 })
 
 app.post('/make_file', (req, res) => {
-	fs.writeFile(path.join(__dirname, '../static/download/test.txt'), req.body, () => {
-		console.log("file created:", req)
-		res.send('File Created.')
+	fs.writeFile(path.join(__dirname, '../static/files/' + req.body.name + '.txt'), req.body.content, () => {
+		res.send({success: true})
 	})
 })
 

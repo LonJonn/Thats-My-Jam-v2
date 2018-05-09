@@ -32,12 +32,12 @@
       <a @click='downloadFile(file, name)' href="#">Download</a>
       <br><br>
       <div v-if="!loadingFiles" v-for="file in filesList" :key="file">
-        <span v-if="!file.includes('DS')">
+        <span>
           <td>{{ file }}</td>
-          <a :href="'http://localhost:8081/download/'+file"> open</a>
+          <a :href="'http://localhost:8081/files/'+file"> open</a>
         </span>
       </div>
-      <div v-if="loadingFiles">Loading...</div>
+      <div v-else>Loading...</div>
     </div>
   </div>
 </template>
@@ -46,6 +46,7 @@
 import PostsService from '@/services/PostsService'
 import DownloadService from '@/services/DownloadService'
 import FilesService from '@/services/FilesService'
+import { setInterval } from 'timers';
 
 export default {
   name: 'posts',
@@ -61,6 +62,9 @@ export default {
   mounted () {
     this.getPosts()
     this.getFiles()
+    // setInterval(() => {
+    //   this.getFiles()
+    // }, 5000)
   },
   methods: {
     async getPosts () {
@@ -69,12 +73,13 @@ export default {
     },
     async getFiles () {
       const response = await FilesService.fetchFiles()
-      this.filesList = response.data
+      if (response.status !== 304) this.filesList = response.data
       this.loadingFiles = false
     },
     async downloadFile (file, name) {
-      let nameFixed = name + '.' + file.split('.')[1]
-      await DownloadService.save('http://localhost:8081/download/', file, nameFixed)
+      let nameFixed
+      if (name) nameFixed = name + '.' + file.split('.')[1]
+      await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
     },
     async deletePost (id) {
       const $this = this
