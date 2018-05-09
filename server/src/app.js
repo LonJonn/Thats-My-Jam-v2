@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const path = require('path')
+const fs = require('fs')
 
 const app = express()
 app.use(morgan('dev'))
@@ -14,6 +15,19 @@ const mongodb_conn_module = require('./mongodbConnModule');	//import the mongodb
 mongodb_conn_module.connect();	//connect to mongo database
 
 var Post = require("../models/post");	//get the Post model schema (so it knows how to structure its db entry)
+
+app.get('/get_files', (req, res) => {
+	fs.readdir(path.join(__dirname, '../static/download'), (err, files) => {
+		res.send(files)
+	})
+})
+
+app.post('/make_file', (req, res) => {
+	fs.writeFile(path.join(__dirname, '../static/download/test.txt'), req.body, () => {
+		console.log("file created:", req)
+		res.send('File Created.')
+	})
+})
 
 app.get('/posts', (req, res) => {	//get posts from API on 8081
 	Post.find({}, 'title description', function (error, posts) {	//find all posts documents, get said tables, callback

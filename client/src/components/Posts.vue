@@ -29,16 +29,23 @@
       <br>
       <input type="text" name="name" id="name" placeholder="name to save as" v-model='name'>
       <br>
-      <a @click='downloadFile' href="#">function</a>
-      <br>
-      <a href="http://localhost:8081/download/test.txt">href</a>
+      <a @click='downloadFile(file, name)' href="#">Download</a>
+      <br><br>
+      <div v-if="!loadingFiles" v-for="file in filesList" :key="file">
+        <span v-if="!file.includes('DS')">
+          <td>{{ file }}</td>
+          <a :href="'http://localhost:8081/download/'+file"> open</a>
+        </span>
+      </div>
+      <div v-if="loadingFiles">Loading...</div>
     </div>
   </div>
 </template>
 
 <script>
 import PostsService from '@/services/PostsService'
-import Download from '@/services/Download'
+import DownloadService from '@/services/DownloadService'
+import FilesService from '@/services/FilesService'
 
 export default {
   name: 'posts',
@@ -46,19 +53,28 @@ export default {
     return {
       posts: [],
       file: '',
-      name: ''
+      loadingFiles: true,
+      name: '',
+      filesList: []
     }
   },
   mounted () {
     this.getPosts()
+    this.getFiles()
   },
   methods: {
     async getPosts () {
       const response = await PostsService.fetchPosts()  // wait for response from api to get all posts
       this.posts = response.data.posts  // set array to response array
     },
-    async downloadFile () {
-      await Download.save('http://localhost:8081/download/', this.file, this.name)
+    async getFiles () {
+      const response = await FilesService.fetchFiles()
+      this.filesList = response.data
+      this.loadingFiles = false
+    },
+    async downloadFile (file, name) {
+      let nameFixed = name + '.' + file.split('.')[1]
+      await DownloadService.save('http://localhost:8081/download/', file, nameFixed)
     },
     async deletePost (id) {
       const $this = this
