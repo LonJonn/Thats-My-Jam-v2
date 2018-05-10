@@ -20,7 +20,7 @@ module.exports = {
         let jam = ytdl(url);
 
         jam.on('info', function (info) {
-            let cleanTitle = sanitise(info.title);
+            cleanTitle = sanitise(info.title);
             console.log('\nDownload started:', cleanTitle);
             let sizeMb = info.size / 1048576;
             console.log('Size:', sizeMb.toFixed(2), 'mb');
@@ -38,15 +38,15 @@ module.exports = {
                 })
             })
 
-            // jam.pipe(fs.createWriteStream(videoFile));
-            // downloading = true;
+            jam.pipe(fs.createWriteStream(videoFile));
+            downloading = true;
 
-            // let downloadInfo = setInterval(function () {
-            //     downloaded = (fs.statSync(videoFile).size / 1048576).toFixed(0);
-            //     toDownload = ((info.size - fs.statSync(videoFile).size) / 1048576).toFixed(0);
-            //     percentage = ((downloaded / sizeMb) * 100).toFixed(0);
-            //     console.log('To download:', toDownload, 'mb -', percentage + '% complete');
-            // }, 2000);
+            let downloadInfo = setInterval(function () {
+                downloaded = (fs.statSync(videoFile).size / 1048576).toFixed(0);
+                toDownload = ((info.size - fs.statSync(videoFile).size) / 1048576).toFixed(0);
+                percentage = ((downloaded / sizeMb) * 100).toFixed(0);
+                console.log('To download:', toDownload, 'mb -', percentage + '% complete');
+            }, 500);
 
             jam.on('end', function () {
                 clearInterval(downloadInfo);
@@ -56,15 +56,20 @@ module.exports = {
         });
     },
     downloadInfo: function () {
-        if (downloading) {
-            return {
-                percentage: percentage.toString(),
-                downloaded: downloaded.toString(),
-                toDownload: toDownload.toString(),
-                downloading: downloading
+        try {
+            if (downloading) {
+                return {
+                    filename: cleanTitle,
+                    percentage: percentage.toString(),
+                    downloaded: downloaded.toString(),
+                    toDownload: toDownload.toString(),
+                    downloading: downloading
+                }
+            } else {
+                return { downloading: downloading }
             }
-        } else {
-            return { downloading: downloading }
+        } catch (error) {
+            return { downloading: false }
         }
     }
 }

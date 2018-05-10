@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Api from '@/services/Api'
 
 export default {
   save (url, file, name) {
@@ -13,6 +14,16 @@ export default {
       link.setAttribute('download', name || file)
       document.body.appendChild(link)
       link.click()
+    })
+  },
+  getDownloadInfo () {
+    return new Promise(resolve => {
+      resolve(Api().get('download_info')) // return result from server
+    })
+  },
+  downloadVideo (params) {
+    return new Promise(resolve => {
+      resolve(Api().post('download_video', params))
     })
   }
 }

@@ -2,11 +2,9 @@
   <div>
     <h1>Playground</h1>
     this is my playground!!<br><br>
-    <input type="text" name="file" id="file" placeholder="file.txt" v-model='file'>
+    <input type="text" name="link" id="link" placeholder="Enter your link here!" v-model='link'>
     <br>
-    <input type="text" name="name" id="name" placeholder="name to save as" v-model='name'>
-    <br>
-    <a @click='downloadFile(file, name)' href="#" class="button">Download</a>
+    <a @click='downloadVideo' href="#" class="button">Download</a>
     <br>
     <h3>files</h3>
     <div v-if="!loadingFiles" v-for="file in filesList" :key="file">
@@ -17,6 +15,17 @@
       </span>
     </div>
     <div v-else>Loading...</div>
+    <div id="downloadInfo">
+      <h2>Download Info.</h2>
+      <div v-if="!downloadInfo.downloading">No active downloads.</div>
+      <div v-else>
+        <b>Current Download:</b> {{ downloadInfo.filename }} <br>
+        <b>Percentage:</b> {{ downloadInfo.percentage }}% <br>
+        <b>Downloaded:</b> {{ downloadInfo.downloaded }} mb <br>
+        <b>To Download:</b> {{ downloadInfo.toDownload }} mb <br><br>
+        <progress max="100" :value=downloadInfo.percentage></progress>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -29,16 +38,18 @@ export default {
   data () {
     return {
       file: '',
+      link: '',
       loadingFiles: true,
       name: '',
-      filesList: []
+      filesList: [],
+      downloadInfo: {downloading: false}
     }
   },
   mounted () {
     this.getFiles()
-    // setInterval(() => {
-    //   this.getFiles()
-    // }, 5000)
+    setInterval(() => {
+      this.getDownloadInfo()
+    }, 500)
   },
   methods: {
     async getFiles () {
@@ -46,10 +57,19 @@ export default {
       if (response.status !== 304) this.filesList = response.data
       this.loadingFiles = false
     },
+    async getDownloadInfo () {
+      const response = await DownloadService.getDownloadInfo()
+      if (response.status !== 304) this.downloadInfo = response.data
+    },
     async downloadFile (file, name) {
       let nameFixed
       if (name) nameFixed = name + '.' + file.split('.')[1]
       await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
+    },
+    async downloadVideo () {
+      DownloadService.downloadVideo({
+        link: this.link
+      })
     }
   }
 }
@@ -87,6 +107,7 @@ a.button {
   border-radius: 3px;
   width: 90px;
   margin: 10px auto 0;
+  padding: 5px 0;
 }
 a.add_post_link {
   background: #4d7ef7;

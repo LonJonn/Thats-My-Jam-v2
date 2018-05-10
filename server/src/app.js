@@ -6,7 +6,7 @@ const path = require('path')
 const fs = require('fs')
 
 const app = express()
-app.use(morgan('dev'))
+// app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static(path.join(__dirname, '../static')))
@@ -20,11 +20,8 @@ const fileModule = require('./fileModule')
 var Post = require("../models/post");	//get the Post model schema (so it knows how to structure its db entry)
 var downloading = false;
 
-jammifyServer.download("https://www.youtube.com/watch?v=p3f-eDzkxcw")
-
 // ---------------------Files---------------------
 app.get('/get_files', (req, res) => {
-	console.log(fileModule.readDir('../static/files'))
 	res.send(fileModule.readDir('../static/files'))
 	
 })
@@ -38,6 +35,10 @@ app.post('/make_file', (req, res) => {
 
 app.get('/download_info', (req, res) => {
 	res.send(jammifyServer.downloadInfo())
+})
+
+app.post('/download_video', (req, res) => {
+	jammifyServer.download(req.body.link)
 })
 
 app.get('/posts', (req, res) => {	//get posts from API on 8081
