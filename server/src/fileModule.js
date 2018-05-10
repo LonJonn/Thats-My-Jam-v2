@@ -3,14 +3,12 @@ const path = require('path');
 
 module.exports = {
     readDir: function (dir) {
+        let filesClean = new Array
         fs.readdir(path.join(__dirname, dir), (err, files) => {
-            let filesClean = new Array
             files.forEach( file => {
                 if (!file.startsWith('.')) filesClean.push(file)
             })
-            console.log(filesClean);
-            
-            return filesClean
         })
+        return filesClean
     }
 }

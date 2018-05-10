@@ -24,7 +24,9 @@ jammifyServer.download("https://www.youtube.com/watch?v=p3f-eDzkxcw")
 
 // ---------------------Files---------------------
 app.get('/get_files', (req, res) => {
+	console.log(fileModule.readDir('../static/files'))
 	res.send(fileModule.readDir('../static/files'))
+	
 })
 
 app.post('/make_file', (req, res) => {
