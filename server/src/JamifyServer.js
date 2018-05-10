@@ -12,9 +12,7 @@ module.exports = {
         let thumbSaveDir = path.join(__dirname, '../static/files/');
         let videoSaveDir = path.join(__dirname, '../static/files/');
         [thumbSaveDir, videoSaveDir].forEach((n) => {
-            if (!fs.existsSync(n)){
-                fs.mkdirSync(n);
-            }
+            if (!fs.existsSync(n)) fs.mkdirSync(n);
         })
 
         let jam = ytdl(url);
@@ -53,11 +51,16 @@ module.exports = {
             });
         });
     },
-    getInfo: function () {
-        return {
-            percentage: percentage.toString(),
-            downloaded: downloaded.toString(),
-            toDownload: toDownload.toString()
+    downloadInfo: function () {
+        try {
+            return {
+                percentage: percentage.toString(),
+                downloaded: downloaded.toString(),
+                toDownload: toDownload.toString(),
+                downloading: true
+            }
+        } catch (error) {
+            return { downloading: false }
         }
     }
 }

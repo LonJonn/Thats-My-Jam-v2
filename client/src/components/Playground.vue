@@ -1,15 +1,19 @@
 <template>
   <div>
+    <h1>Playground</h1>
+    this is my playground!!<br><br>
     <input type="text" name="file" id="file" placeholder="file.txt" v-model='file'>
     <br>
     <input type="text" name="name" id="name" placeholder="name to save as" v-model='name'>
     <br>
-    <a @click='downloadFile(file, name)' href="#">Download</a>
-    <br><br>
+    <a @click='downloadFile(file, name)' href="#" class="button">Download</a>
+    <br>
+    <h3>files</h3>
     <div v-if="!loadingFiles" v-for="file in filesList" :key="file">
       <span>
-        <td>{{ file }}</td>
-        <a :href="'http://localhost:8081/files/'+file"> open</a>
+        <td>{{ file }}</td> - 
+        <a :href="'http://localhost:8081/files/'+file"> open</a> |
+        <a href="#" @click="downloadFile(file)">download</a>
       </span>
     </div>
     <div v-else>Loading...</div>
@@ -17,16 +21,13 @@
 </template>
 
 <script>
-import PostsService from '@/services/PostsService'
 import DownloadService from '@/services/DownloadService'
 import FilesService from '@/services/FilesService'
-import { setInterval } from 'timers';
 
 export default {
-  name: 'posts',
+  name: 'playground',
   data () {
     return {
-      posts: [],
       file: '',
       loadingFiles: true,
       name: '',
@@ -34,17 +35,12 @@ export default {
     }
   },
   mounted () {
-    this.getPosts()
     this.getFiles()
     // setInterval(() => {
     //   this.getFiles()
     // }, 5000)
   },
   methods: {
-    async getPosts () {
-      const response = await PostsService.fetchPosts()  // wait for response from api to get all posts
-      this.posts = response.data.posts  // set array to response array
-    },
     async getFiles () {
       const response = await FilesService.fetchFiles()
       if (response.status !== 304) this.filesList = response.data
@@ -54,23 +50,6 @@ export default {
       let nameFixed
       if (name) nameFixed = name + '.' + file.split('.')[1]
       await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
-    },
-    async deletePost (id) {
-      const $this = this
-      $this.$swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(function (result) {
-        if (result.value) { // if confirmed
-          PostsService.deletePost(id) // delete post with id from get() for specific post
-          $this.$router.go({ path: '/' }) // navigate back to home page (uses go because it is already on home page)
-        }
-      })
     }
   }
 }
@@ -101,6 +80,14 @@ a {
   color: #4d7ef7;
   text-decoration: none;
 }
+a.button {
+  display: block;
+  color: #f2f2f2;
+  background-color: #4d7ef7;
+  border-radius: 3px;
+  width: 90px;
+  margin: 10px auto 0;
+}
 a.add_post_link {
   background: #4d7ef7;
   color: #fff;
@@ -108,5 +95,9 @@ a.add_post_link {
   text-transform: uppercase;
   font-size: 12px;
   font-weight: bold;
+}
+input {
+  padding: 4px;
+  margin-bottom: 5px;
 }
 </style>

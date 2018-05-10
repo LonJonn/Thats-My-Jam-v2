@@ -15,21 +15,16 @@ const mongodb_conn_module = require('./mongodbConnModule');	//import the mongodb
 mongodb_conn_module.connect();	//connect to mongo database
 
 const jammifyServer = require('./JamifyServer');
+const fileModule = require('./fileModule')
 
 var Post = require("../models/post");	//get the Post model schema (so it knows how to structure its db entry)
 var downloading = false;
 
-jammifyServer.download("https://www.youtube.com/watch?v=eSjSozKL_EA")
+jammifyServer.download("https://www.youtube.com/watch?v=p3f-eDzkxcw")
 
 // ---------------------Files---------------------
 app.get('/get_files', (req, res) => {
-	fs.readdir(path.join(__dirname, '../static/files'), (err, files) => {
-		let filesClean = new Array
-		files.forEach( file => {
-			if (!file.startsWith('.')) filesClean.push(file)
-		})
-		res.send(filesClean)
-	})
+	res.send(fileModule.readDir('../static/files'))
 })
 
 app.post('/make_file', (req, res) => {
@@ -39,8 +34,8 @@ app.post('/make_file', (req, res) => {
 })
 // ------------------End Files---------------------
 
-app.get('/download_status', (req, res) => {
-	res.send(jammifyServer.getInfo())
+app.get('/download_info', (req, res) => {
+	res.send(jammifyServer.downloadInfo())
 })
 
 app.get('/posts', (req, res) => {	//get posts from API on 8081
