@@ -22,13 +22,23 @@ var downloading = false;
 
 // ---------------------Files---------------------
 app.get('/get_files', (req, res) => {
-	res.send(fileModule.readDir('../static/files'))
-	
+	fileModule.readDir('../static/files').then(resp => {
+		res.send(resp)
+	})
 })
 
 app.post('/make_file', (req, res) => {
 	fs.writeFile(path.join(__dirname, '../static/files/' + req.body.name + '.txt'), req.body.content, () => {
 		res.send({success: true})
+	})
+})
+
+app.delete('/delete_file/:file', (req, res) => {	
+	fileModule.deleteFile(req.params.file).then( (file) => {
+		console.log('[File Deleted]', file);
+		res.send('[File Deleted] ' + file)
+	}).catch((error) => {
+		res.send(error)
 	})
 })
 // ------------------End Files---------------------
@@ -38,7 +48,9 @@ app.get('/download_info', (req, res) => {
 })
 
 app.post('/download_video', (req, res) => {
-	jammifyServer.download(req.body.link)
+	jammifyServer.download(req.body.link).then(resp => {
+		res.send(resp)		
+	})
 })
 
 app.get('/posts', (req, res) => {	//get posts from API on 8081

@@ -3,21 +3,23 @@ const path = require('path');
 
 module.exports = {
     readDir: function (dir) {
-        let filesClean = new Array
-        fs.readdirSync(path.join(__dirname, dir)).forEach( file => {
-            if (!file.startsWith('.')) filesClean.push(file)
+        return new Promise((resolve, reject) => {
+            let filesClean = new Array
+            fs.readdir(path.join(__dirname, dir), (err, files) => {
+                files.forEach( file => {
+                    if (!file.startsWith('.')) filesClean.push(file)
+                })
+                resolve(filesClean)
+            })
         })
-        return filesClean
+    },
+    deleteFile: function (file) {
+        return new Promise((resolve, reject) => {
+            fs.unlink(path.join(__dirname, '../static/files/' + file), (err) => {
+                if (err) reject(err)
+
+                resolve(file)
+            })
+        })
     }
 }
-
-// MAKE IT ASYNC!!!
-// readDir: function (dir) {
-//     let filesClean = new Array
-//     fs.readdir(path.join(__dirname, dir), (err, files) => {
-//         files.forEach( file => {
-//             if (!file.startsWith('.')) filesClean.push(file)
-//         })
-//     })
-//     return filesClean
-// }

@@ -11,7 +11,8 @@
       <span>
         <td>{{ file }}</td> - 
         <a :href="'http://localhost:8081/files/'+file"> open</a> |
-        <a href="#" @click="downloadFile(file)">download</a>
+        <a href="#" @click="downloadFile(file)">download</a> - 
+        <a href="#" @click="deleteFile(file)">delete</a>
       </span>
     </div>
     <div v-else>Loading...</div>
@@ -22,7 +23,7 @@
         <b>Current Download:</b> {{ downloadInfo.filename }} <br>
         <b>Percentage:</b> {{ downloadInfo.percentage }}% <br>
         <b>Downloaded:</b> {{ downloadInfo.downloaded }} mb <br>
-        <b>To Download:</b> {{ downloadInfo.toDownload }} mb <br><br>
+        <b>Full Size:</b> {{ downloadInfo.size }} mb <br><br>
         <progress max="100" :value=downloadInfo.percentage></progress>
       </div>
     </div>
@@ -37,19 +38,25 @@ export default {
   name: 'playground',
   data () {
     return {
-      file: '',
       link: '',
       loadingFiles: true,
-      name: '',
       filesList: [],
       downloadInfo: {downloading: false}
     }
   },
-  mounted () {
+  async mounted () {
     this.getFiles()
-    setInterval(() => {
-      this.getDownloadInfo()
-    }, 500)
+    await this.getDownloadInfo()
+    if (this.downloadInfo.downloading) {
+      var loadTimer = setInterval(() => {
+        this.getDownloadInfo()
+        if (!this.downloadInfo.downloading) {
+          clearInterval(loadTimer)
+          this.$swal('Great!', 'Download Complete!', 'success')
+          this.getFiles()
+        }
+      }, 250)
+    }
   },
   methods: {
     async getFiles () {
@@ -57,9 +64,32 @@ export default {
       if (response.status !== 304) this.filesList = response.data
       this.loadingFiles = false
     },
+    async deleteFile (file) {
+      const $this = this
+      this.$swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(async function (result) {
+        if (result.value) { // if confirmed
+          await FilesService.deleteFile(file)
+          $this.getFiles()
+          $this.$swal({
+            title: 'Bye Bye?',
+            text: 'File Deleted!',
+            type: 'success',
+            timer: 3000
+          })
+        }
+      })
+    },
     async getDownloadInfo () {
       const response = await DownloadService.getDownloadInfo()
-      if (response.status !== 304) this.downloadInfo = response.data
+      this.downloadInfo = response.data
     },
     async downloadFile (file, name) {
       let nameFixed
@@ -67,9 +97,24 @@ export default {
       await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
     },
     async downloadVideo () {
-      DownloadService.downloadVideo({
-        link: this.link
-      })
+      if (!this.downloadInfo.downloading) {
+        let updateDownloadInfo = setInterval(() => {
+          this.getDownloadInfo()
+        }, 250)
+        await DownloadService.downloadVideo({
+          link: this.link
+        })
+        clearInterval(updateDownloadInfo)
+        this.getDownloadInfo()
+        this.$swal('Great!', 'Download Complete!', 'success')
+        this.getFiles()
+      } else {
+        this.$swal({
+          title: 'Unable to Download!',
+          text: 'Please wait for other download to finish...',
+          type: 'error'
+        })
+      }
     }
   }
 }
