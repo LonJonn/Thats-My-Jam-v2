@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Playground</h1>
-    this is my playground!!<br><br>
+    Sugoi woi woi woi!!<br><br>
     <input type="text" name="link" id="link" placeholder="Enter your link here!" v-model='link'>
     <br>
     <a @click='downloadVideo' href="#" class="button">Download</a>
@@ -17,14 +17,12 @@
     </div>
     <div v-else>Loading...</div>
     <div id="downloadInfo">
-      <h2>Download Info.</h2>
+      <h3>Download Info.</h3>
       <div v-if="!downloadInfo.downloading">No active downloads.</div>
       <div v-else>
         <b>Current Download:</b> {{ downloadInfo.filename }} <br>
-        <b>Percentage:</b> {{ downloadInfo.percentage }}% <br>
-        <b>Downloaded:</b> {{ downloadInfo.downloaded }} mb <br>
-        <b>Full Size:</b> {{ downloadInfo.size }} mb <br><br>
-        <progress max="100" :value=downloadInfo.percentage></progress>
+        <b>Downloaded:</b> {{ downloadInfo.downloaded }} / {{ downloadInfo.size }} mb<br>
+        <progress max="100" :value=downloadInfo.percentage></progress> {{ downloadInfo.percentage }}%
       </div>
     </div>
   </div>
@@ -79,7 +77,7 @@ export default {
           await FilesService.deleteFile(file)
           $this.getFiles()
           $this.$swal({
-            title: 'Bye Bye?',
+            title: 'Bye Bye!',
             text: 'File Deleted!',
             type: 'success',
             timer: 3000
