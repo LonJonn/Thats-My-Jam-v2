@@ -21,7 +21,7 @@ module.exports = {
             jam.on('info', function (info) {
                 
                 cleanTitle = sanitise(info.title);
-                console.log('\x1b[35m%s\x1b[0m', '\n[Download Started]\n' + cleanTitle);
+                console.log('\x1b[35m%s\x1b[0m', '[Download Started]\n' + cleanTitle);
                 sizeMb = (info.size / 1048576).toFixed(1);
                 console.log('Size:', sizeMb, 'mb');
     
@@ -50,7 +50,7 @@ module.exports = {
                     clearInterval(downloadInfo);
                     console.log('\x1b[36m%s\x1b[0m', '[Download Finished]');
                     downloading = false;
-                    resolve('note: pass back video info')   // to add to database
+                    resolve({video: 'info'})   // to add to database
                 });
             });
         })
@@ -71,5 +71,16 @@ module.exports = {
         } catch (error) {
             return { downloading: false }
         }
+    },
+    checkLink: function(url) {
+        return new Promise(async (resolve, reject) => {
+            await ytdl.getInfo(url, (err, info) => {
+                if (err) {
+                    reject({invalidLink: true})
+                } else {
+                    resolve(info.id)
+                }
+            })
+        })
     }
 }

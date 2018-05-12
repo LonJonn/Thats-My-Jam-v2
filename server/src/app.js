@@ -48,10 +48,23 @@ app.get('/download_info', (req, res) => {
 })
 
 app.post('/download_video', (req, res) => {
-	jammifyServer.download(req.body.link).then(resp => {
-		res.send(resp)		
+	jammifyServer.checkLink(req.body.link).then(ID => {
+		console.log('\nGetting Information...')
+		jammifyServer.download(ID).then(response => {
+			res.send(response)		
+		})
+	}).catch(err => {
+		res.send(err)
 	})
 })
+
+
+
+
+
+
+
+
 
 app.get('/posts', (req, res) => {	//get posts from API on 8081
 	Post.find({}, 'title description', function (error, posts) {	//find all posts documents, get said tables, callback

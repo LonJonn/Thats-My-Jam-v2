@@ -101,13 +101,18 @@ export default {
         let updateDownloadInfo = setInterval(() => {
           this.getDownloadInfo()
         }, 250)
-        await DownloadService.downloadVideo({
+        DownloadService.downloadVideo({
           link: this.link
+        }).then(response => {
+          clearInterval(updateDownloadInfo)
+          this.getDownloadInfo()
+          this.getFiles()
+          if (response.data.invalidLink) {
+            this.$swal('Bwahhh!', 'Link not found!', 'error')
+          } else {
+            this.$swal('Great!', 'Download Complete!', 'success')
+          }
         })
-        clearInterval(updateDownloadInfo)
-        this.getDownloadInfo()
-        this.$swal('Great!', 'Download Complete!', 'success')
-        this.getFiles()
       } else {
         this.$swal({
           title: 'Unable to Download!',
