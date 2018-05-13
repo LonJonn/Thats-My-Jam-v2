@@ -8,6 +8,7 @@ const http = require('http');
 
 module.exports = {
     download: function (url) {
+        console.log(url)
         return new Promise((resolve, reject) => {
             downloaded = sizeMb = percentage = 0;
             let thumbSaveDir = path.join(__dirname, '../static/files/');
@@ -44,7 +45,7 @@ module.exports = {
                 let downloadInfo = setInterval(function () {
                     downloaded = (fs.statSync(videoFile).size / 1048576).toFixed(1);
                     percentage = ((downloaded / sizeMb) * 100).toFixed(0);
-                }, 250);
+                }, 500);
     
                 jam.on('end', function () {
                     clearInterval(downloadInfo);
@@ -63,10 +64,10 @@ module.exports = {
                     percentage: percentage.toString(),
                     downloaded: downloaded.toString(),
                     size: sizeMb.toString(),
-                    downloading: downloading
+                    downloading: true
                 }
             } else {
-                return { downloading: downloading }
+                return { downloading: false }
             }
         } catch (error) {
             return { downloading: false }
@@ -76,9 +77,12 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             await ytdl.getInfo(url, (err, info) => {
                 if (err) {
-                    reject({invalidLink: true})
+                    reject({validLink: false})
                 } else {
-                    resolve(info.id)
+                    resolve({
+                        validLink: true,
+                        id: info.id
+                    })
                 }
             })
         })

@@ -17,13 +17,12 @@ export default {
     })
   },
   getDownloadInfo () {
-    return new Promise(resolve => {
-      resolve(Api().get('download_info')) // return result from server
-    })
+    return Api().get('download_info') // return result from server
   },
   downloadVideo (params) {
-    return new Promise(resolve => {
-      resolve(Api().post('download_video', params))
-    })
+    return Api().post('download_video', params)
+  },
+  checkLink (params) {
+    return Api().post('check_link', params)
   }
 }

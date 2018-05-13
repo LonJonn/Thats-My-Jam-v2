@@ -1,11 +1,12 @@
 <template>
   <div>
     <h1>Playground</h1>
-    Sugoi woi woi woi!!<br><br>
+    Sugoi woi woi!!<br><br>
     <input type="text" name="link" id="link" placeholder="Enter your link here!" v-model='link'>
     <br>
     <a @click='downloadVideo' href="#" class="button">Download</a>
     <br>
+    <div v-show="searching">Getting Info...</div>
     <h3>files</h3>
     <div v-if="loadingFiles">Loading...</div>
     <div v-else-if="filesList.length === 0">No Downloads...</div>
@@ -14,7 +15,7 @@
         <td>{{ file }}</td> - 
         <a :href="'http://localhost:8081/files/'+file"> open</a> |
         <a href="#" @click="downloadFile(file)">download</a> - 
-        <a href="#" @click="deleteFile(file)">delete</a>
+        <a href="#" style="color:#f44336" @click="deleteFile(file)">delete</a>
       </span>
     </div>
     <div id="downloadInfo">
@@ -40,7 +41,8 @@ export default {
       link: '',
       loadingFiles: true,
       filesList: [],
-      downloadInfo: {downloading: false}
+      downloadInfo: { downloading: false },
+      searching: false
     }
   },
   async mounted () {
@@ -54,7 +56,7 @@ export default {
           this.$swal('Great!', 'Download Complete!', 'success')
           this.getFiles()
         }
-      }, 250)
+      }, 500)
     }
   },
   methods: {
@@ -80,8 +82,7 @@ export default {
           $this.$swal({
             title: 'Bye Bye!',
             text: 'File Deleted!',
-            type: 'success',
-            timer: 3000
+            type: 'success'
           })
         }
       })
@@ -96,49 +97,58 @@ export default {
       await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
     },
     async downloadVideo () {
-      if (this.link.includes('youtube')) {
-        if (!this.downloadInfo.downloading) {
-          this.downloadInfo.downloading = await true
-          this.$swal({
-            title: 'Sent!',
-            type: 'success',
-            toast: true,
-            position: 'top-start',
-            timer: 3000,
-            button: false
+      let link = this.link
+      if (link.includes('youtube')) {
+        if (!this.downloadInfo.downloading && !this.searching) {
+          this.searching = true
+          let linkCheck = await DownloadService.checkLink({
+            link: link
           })
-          let updateDownloadInfo = setInterval(() => {
-            this.getDownloadInfo()
-          }, 250)
-          DownloadService.downloadVideo({
-            link: this.link
-          }).then(response => {
-            clearInterval(updateDownloadInfo)
-            this.getDownloadInfo()
-            this.getFiles()
-            if (response.data.invalidLink) {
-              this.$swal('Bwahhh!', 'Invalid Link! Video not found...', 'error')
-            } else {
+          if (linkCheck.data.validLink) {
+            this.searching = false
+            this.$swal({
+              title: 'Download Starting...',
+              type: 'success',
+              toast: true,
+              position: 'top-start',
+              timer: 5000,
+              showConfirmButton: false
+            })
+            let updateDownloadInfo = setInterval(() => {
+              this.getDownloadInfo()
+            }, 500)
+            DownloadService.downloadVideo({
+              link: link
+            }).then(response => {
+              clearInterval(updateDownloadInfo)
+              this.getDownloadInfo()
+              this.getFiles()
               this.$swal('Great!', 'Download Complete!', 'success')
-            }
-            this.link = ''
-          })
+            })
+          } else {
+            this.$swal({
+              title: 'Bwahhh!',
+              html: '<b>Invalid Link!</b><br>Video not found...',
+              type: 'error'
+            })
+            this.searching = false
+          }
         } else {
           this.$swal({
             title: 'Unable to Download!',
             text: 'Please wait for other download to finish...',
             type: 'error'
           })
-          this.link = ''
         }
       } else {
-        this.$swal('Sworry ;(', 'I only work with youtube videos...', 'error')
-        this.link = ''
+        this.$swal('Sowwy ;(', 'I only work with youtube videos...', 'error')
       }
+      this.link = ''
     }
   }
 }
 </script>
+
 <style type="text/css">
 .table-wrap {
   width: 60%;

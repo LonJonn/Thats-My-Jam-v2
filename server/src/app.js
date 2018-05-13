@@ -43,14 +43,18 @@ app.get('/download_info', (req, res) => {
 	res.send(jammifyServer.downloadInfo())	// return data from function that grabs current download info
 })
 
-app.post('/download_video', (req, res) => {
+app.post('/check_link', (req, res) => {
 	jammifyServer.checkLink(req.body.link).then(ID => {
-		console.log('\nGetting Information...')
-		jammifyServer.download(ID).then(response => {
-			res.send(response)	// return video info
-		})
+		res.send(ID)
 	}).catch(err => {
-		res.send(err)	// return true for "NoLinkFound"
+		res.send(err)
+	})
+})
+
+app.post('/download_video', (req, res) => {
+	console.log('\nGetting Information...')
+	jammifyServer.download(req.body.link).then(vidInfo => {
+		res.send(vidInfo)	// return video info
 	})
 })
 
