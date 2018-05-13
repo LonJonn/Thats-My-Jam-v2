@@ -18,43 +18,39 @@ const jammifyServer = require('./JamifyServer');
 const fileModule = require('./fileModule')
 
 var Post = require("../models/post");	//get the Post model schema (so it knows how to structure its db entry)
-var downloading = false;
+var Video = require("../models/video");
+
+var downloading = false;	// set downloading to false initial for download info
 
 // ---------------------Files---------------------
 app.get('/get_files', (req, res) => {
-	fileModule.readDir('../static/files').then(resp => {
-		res.send(resp)
-	})
-})
-
-app.post('/make_file', (req, res) => {
-	fs.writeFile(path.join(__dirname, '../static/files/' + req.body.name + '.txt'), req.body.content, () => {
-		res.send({success: true})
+	fileModule.readDir('../static/files').then(response => {	// get files then return to client
+		res.send(response)
 	})
 })
 
 app.delete('/delete_file/:file', (req, res) => {	
 	fileModule.deleteFile(req.params.file).then( (file) => {
-		console.log('[File Deleted]', file);
-		res.send('[File Deleted] ' + file)
+		console.log('[File Deleted]', file);	// log deleted file on server
+		res.send('[File Deleted] ' + file)	// response (if I need to use on client)
 	}).catch((error) => {
-		res.send(error)
+		console.log(error)	// if error, log error
 	})
 })
 // ------------------End Files---------------------
 
 app.get('/download_info', (req, res) => {
-	res.send(jammifyServer.downloadInfo())
+	res.send(jammifyServer.downloadInfo())	// return data from function that grabs current download info
 })
 
 app.post('/download_video', (req, res) => {
 	jammifyServer.checkLink(req.body.link).then(ID => {
 		console.log('\nGetting Information...')
 		jammifyServer.download(ID).then(response => {
-			res.send(response)		
+			res.send(response)	// return video info
 		})
 	}).catch(err => {
-		res.send(err)
+		res.send(err)	// return true for "NoLinkFound"
 	})
 })
 

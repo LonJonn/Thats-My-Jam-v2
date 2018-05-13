@@ -96,28 +96,44 @@ export default {
       await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
     },
     async downloadVideo () {
-      if (!this.downloadInfo.downloading) {
-        let updateDownloadInfo = setInterval(() => {
-          this.getDownloadInfo()
-        }, 250)
-        DownloadService.downloadVideo({
-          link: this.link
-        }).then(response => {
-          clearInterval(updateDownloadInfo)
-          this.getDownloadInfo()
-          this.getFiles()
-          if (response.data.invalidLink) {
-            this.$swal('Bwahhh!', 'Invalid Link! Video not found...', 'error')
-          } else {
-            this.$swal('Great!', 'Download Complete!', 'success')
-          }
-        })
+      if (this.link.includes('youtube')) {
+        if (!this.downloadInfo.downloading) {
+          this.downloadInfo.downloading = await true
+          this.$swal({
+            title: 'Sent!',
+            type: 'success',
+            toast: true,
+            position: 'top-start',
+            timer: 3000,
+            button: false
+          })
+          let updateDownloadInfo = setInterval(() => {
+            this.getDownloadInfo()
+          }, 250)
+          DownloadService.downloadVideo({
+            link: this.link
+          }).then(response => {
+            clearInterval(updateDownloadInfo)
+            this.getDownloadInfo()
+            this.getFiles()
+            if (response.data.invalidLink) {
+              this.$swal('Bwahhh!', 'Invalid Link! Video not found...', 'error')
+            } else {
+              this.$swal('Great!', 'Download Complete!', 'success')
+            }
+            this.link = ''
+          })
+        } else {
+          this.$swal({
+            title: 'Unable to Download!',
+            text: 'Please wait for other download to finish...',
+            type: 'error'
+          })
+          this.link = ''
+        }
       } else {
-        this.$swal({
-          title: 'Unable to Download!',
-          text: 'Please wait for other download to finish...',
-          type: 'error'
-        })
+        this.$swal('Sworry ;(', 'I only work with youtube videos...', 'error')
+        this.link = ''
       }
     }
   }
