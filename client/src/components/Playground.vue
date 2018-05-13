@@ -7,7 +7,9 @@
     <a @click='downloadVideo' href="#" class="button">Download</a>
     <br>
     <h3>files</h3>
-    <div v-if="!loadingFiles" v-for="file in filesList" :key="file">
+    <div v-if="loadingFiles">Loading...</div>
+    <div v-else-if="filesList.length === 0">No Downloads...</div>
+    <div v-else v-for="file in filesList" :key="file">
       <span>
         <td>{{ file }}</td> - 
         <a :href="'http://localhost:8081/files/'+file"> open</a> |
@@ -15,7 +17,6 @@
         <a href="#" @click="deleteFile(file)">delete</a>
       </span>
     </div>
-    <div v-else>Loading...</div>
     <div id="downloadInfo">
       <h3>Download Info.</h3>
       <div v-if="!downloadInfo.downloading">No active downloads.</div>
@@ -106,7 +107,7 @@ export default {
           this.getDownloadInfo()
           this.getFiles()
           if (response.data.invalidLink) {
-            this.$swal('Bwahhh!', 'Link not found!', 'error')
+            this.$swal('Bwahhh!', 'Invalid Link! Video not found...', 'error')
           } else {
             this.$swal('Great!', 'Download Complete!', 'success')
           }
