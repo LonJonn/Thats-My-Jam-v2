@@ -2,12 +2,12 @@ import axios from 'axios'
 import Api from '@/services/Api'
 
 export default {
-  save (url, file, name) {
+  save(url, file, name) {
     axios({
       url: url + file,
       method: 'GET',
       responseType: 'blob'
-    }).then((response) => {
+    }).then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
       link.href = url
@@ -16,13 +16,13 @@ export default {
       link.click()
     })
   },
-  getDownloadInfo () {
+  getDownloadInfo() {
     return Api().get('download_info') // return result from server
   },
-  downloadVideo (params) {
+  downloadVideo(params) {
     return Api().post('download_video', params)
   },
-  checkLink (params) {
+  checkLink(params) {
     return Api().post('check_link', params)
   }
 }

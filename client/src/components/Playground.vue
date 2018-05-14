@@ -36,7 +36,7 @@ import FilesService from '@/services/FilesService'
 
 export default {
   name: 'playground',
-  data () {
+  data() {
     return {
       link: '',
       loadingFiles: true,
@@ -45,7 +45,7 @@ export default {
       searching: false
     }
   },
-  async mounted () {
+  async mounted() {
     this.getFiles()
     await this.getDownloadInfo()
     if (this.downloadInfo.downloading) {
@@ -60,12 +60,12 @@ export default {
     }
   },
   methods: {
-    async getFiles () {
+    async getFiles() {
       const response = await FilesService.fetchFiles()
       if (response.status !== 304) this.filesList = response.data
       this.loadingFiles = false
     },
-    async deleteFile (file) {
+    async deleteFile(file) {
       const $this = this
       this.$swal({
         title: 'Are you sure?',
@@ -75,8 +75,9 @@ export default {
         confirmButtonColor: '#e74c3c',
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
-      }).then(async function (result) {
-        if (result.value) { // if confirmed
+      }).then(async function(result) {
+        if (result.value) {
+          // if confirmed
           await FilesService.deleteFile(file)
           $this.getFiles()
           $this.$swal({
@@ -87,16 +88,20 @@ export default {
         }
       })
     },
-    async getDownloadInfo () {
+    async getDownloadInfo() {
       const response = await DownloadService.getDownloadInfo()
       this.downloadInfo = response.data
     },
-    async downloadFile (file, name) {
+    async downloadFile(file, name) {
       let nameFixed
       if (name) nameFixed = name + '.' + file.split('.')[1]
-      await DownloadService.save('http://localhost:8081/files/', file, nameFixed)
+      await DownloadService.save(
+        'http://localhost:8081/files/',
+        file,
+        nameFixed
+      )
     },
-    async downloadVideo () {
+    async downloadVideo() {
       let link = this.link
       if (link.includes('youtube')) {
         if (!this.downloadInfo.downloading && !this.searching) {
@@ -155,7 +160,8 @@ export default {
   margin: 0 auto;
   text-align: center;
 }
-table th, table tr {
+table th,
+table tr {
   text-align: left;
 }
 table thead {
