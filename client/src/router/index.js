@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Posts from '@/components/Posts'
-import addpost from '@/components/AddPost'
-import editpost from '@/components/EditPost'
-import playground from '@/components/Playground'
+import Posts from '../components/Posts'
+import addpost from '../components/AddPost'
+import editpost from '../components/EditPost'
+import playground from '../components/Playground'
 
 Vue.use(Router)
 

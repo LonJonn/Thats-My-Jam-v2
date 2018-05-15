@@ -16,7 +16,8 @@
           <td>{{ post.description }}</td>
           <td align="center">
             <router-link v-bind:to="{ name: 'editpost', params: { id: post._id } }">Edit</router-link> |
-            <a href="#" @click="deletePost(post._id)">Delete</a>  <!--^^ create link to edit page using the post id return from get()-->
+            <a href="#" @click="deletePost(post._id)">Delete</a>
+            <!--^^ create link to edit page using the post id return from get()-->
           </td>
         </tr>
       </table>
@@ -29,50 +30,54 @@
 </template>
 
 <script>
-import PostsService from '@/services/PostsService'
+import PostsService from '../services/PostsService'
 
 export default {
   name: 'posts',
-  data () {
+  data() {
     return {
       posts: []
     }
   },
-  mounted () {
+  mounted() {
     this.getPosts()
   },
   methods: {
-    async getPosts () {
-      const response = await PostsService.fetchPosts()  // wait for response from api to get all posts
-      this.posts = response.data.posts  // set array to response array
+    async getPosts() {
+      const response = await PostsService.fetchPosts() // wait for response from api to get all posts
+      this.posts = response.data.posts // set array to response array
     },
-    async deletePost (id) {
+    async deletePost(id) {
       const $this = this
-      $this.$swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(function (result) {
-        if (result.value) { // if confirmed
-          PostsService.deletePost(id) // delete post with id from get() for specific post
-          $this.$router.go({ path: '/' }) // navigate back to home page (uses go because it is already on home page)
-        }
-      })
+      $this
+        .$swal({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        })
+        .then(function(result) {
+          if (result.value) {
+            // if confirmed
+            PostsService.deletePost(id) // delete post with id from get() for specific post
+            $this.$router.go({ path: '/' }) // navigate back to home page (uses go because it is already on home page)
+          }
+        })
     }
   }
 }
 </script>
 <style type="text/css">
 .table-wrap {
-  width: 50%;
+  width: 40%;
   margin: 0 auto;
   text-align: center;
 }
-table th, table tr {
+table th,
+table tr {
   text-align: left;
 }
 table thead {

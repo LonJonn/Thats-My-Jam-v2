@@ -12,9 +12,9 @@
     <div v-else-if="filesList.length === 0">No Downloads...</div>
     <div v-else v-for="file in filesList" :key="file">
       <span>
-        <td>{{ file }}</td> - 
+        <td>{{ file }}</td> -
         <a :href="'http://localhost:8081/files/'+file"> open</a> |
-        <a href="#" @click="downloadFile(file)">download</a> - 
+        <a href="#" @click="downloadFile(file)">download</a> -
         <a href="#" style="color:#f44336" @click="deleteFile(file)">delete</a>
       </span>
     </div>
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import DownloadService from '@/services/DownloadService'
-import FilesService from '@/services/FilesService'
+import DownloadService from '../services/DownloadService'
+import FilesService from '../services/FilesService'
 
 export default {
   name: 'playground',

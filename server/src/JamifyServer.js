@@ -7,6 +7,12 @@ const sanitise = require('sanitize-filename')
 const http = require('http')
 
 module.exports = {
+  /**
+   * Downloads video from URL.
+   * returns video information:
+   * file name, author, runtime, etc.
+   * @param url link to video.
+   */
   download: function(url) {
     console.log(url)
     return new Promise((resolve, reject) => {
@@ -57,6 +63,11 @@ module.exports = {
       })
     })
   },
+  /**
+   * Returns current download information.
+   * filename, percentage, downloaded (mb), total size (mb)
+   * wether the file is downloading (Bool)
+   */
   downloadInfo: function() {
     try {
       if (downloading) {
@@ -74,6 +85,11 @@ module.exports = {
       return { downloading: false }
     }
   },
+  /**
+   * Checks a url for valid video.
+   * returns wether the link was valid and id of video
+   * @param url link of video.
+   */
   checkLink: function(url) {
     return new Promise(async (resolve, reject) => {
       await ytdl.getInfo(url, (err, info) => {

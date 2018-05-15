@@ -1,59 +1,63 @@
 <template>
   <div class="posts">
     <h1>Edit Post</h1>
-      <div class="form">
-        <div>
-          <input type="text" name="title" placeholder="TITLE" v-model="title">
-        </div>
-        <div>
-          <textarea rows="15" cols="15" placeholder="DESCRIPTION" v-model="description"></textarea>
-        </div>
-        <div>
-          <button class="app_post_btn" @click="updatePost">Update</button>
-        </div>
+    <div class="form">
+      <div>
+        <input type="text" name="title" placeholder="TITLE" v-model="title">
       </div>
+      <div>
+        <textarea rows="15" cols="15" placeholder="DESCRIPTION" v-model="description"></textarea>
+      </div>
+      <div>
+        <button class="app_post_btn" @click="updatePost">Update</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import PostsService from '@/services/PostsService'
+import PostsService from '../services/PostsService'
 export default {
   name: 'editpost',
-  data () {
+  data() {
     return {
       title: '',
       description: ''
     }
   },
-  mounted () {
+  mounted() {
     this.getPost()
   },
   methods: {
-    async getPost () {
-      const response = await PostsService.getPost({   // wait for response from api
-        id: this.$route.params.id   // set id from url
+    async getPost() {
+      const response = await PostsService.getPost({
+        // wait for response from api
+        id: this.$route.params.id // set id from url
       })
-      this.title = response.data.title  // asign data
+      this.title = response.data.title // asign data
       this.description = response.data.description
     },
-    async updatePost () {
-      await PostsService.updatePost({   // wait for response from api
-        id: this.$route.params.id,  // pass new values to be changed
+    async updatePost() {
+      await PostsService.updatePost({
+        // wait for response from api
+        id: this.$route.params.id, // pass new values to be changed
         title: this.title,
         description: this.description
       })
-      this.$swal(   // alert message
-        'Great!',   // title
-        `Your post has been updated!`,  // message
-        'success'   // type of alert
+      this.$swal(
+        // alert message
+        'Great!', // title
+        `Your post has been updated!`, // message
+        'success' // type of alert
       )
-      this.$router.push({ name: 'Posts' })  // navigate to page
+      this.$router.push({ name: 'Posts' }) // navigate to page
     }
   }
 }
 </script>
 <style type="text/css">
-.form input, .form textarea {
+.form input,
+.form textarea {
   width: 500px;
   padding: 10px;
   border: 1px solid #e0dede;

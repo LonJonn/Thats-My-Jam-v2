@@ -1,10 +1,10 @@
-import Api from '@/services/Api'
+import Api from '../services/Api'
 
 export default {
-  fetchFiles () {
+  fetchFiles() {
     return Api().get('get_files')
   },
-  deleteFile (file) {
+  deleteFile(file) {
     return Api().delete('delete_file/' + file)
   }
 }

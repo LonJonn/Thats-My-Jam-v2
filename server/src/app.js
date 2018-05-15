@@ -1,9 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 const path = require('path')
-const fs = require('fs')
 
 const app = express()
 // app.use(morgan('dev'))
@@ -18,9 +17,7 @@ const jammifyServer = require('./JamifyServer')
 const fileModule = require('./fileModule')
 
 var Post = require('../models/post') //get the Post model schema (so it knows how to structure its db entry)
-var Video = require('../models/video')
-
-var downloading = false // set downloading to false initial for download info
+// var Video = require('../models/video')
 
 // ---------------------Files---------------------
 app.get('/get_files', (req, res) => {
