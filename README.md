@@ -1,10 +1,10 @@
 # Thats My Jam V2
-A program created by the one and only LonJon to jammify your yuotube playlists!
+Soon to be web app to download playlists and create albums from youtube!
 
 # Made with Vue, Express, Node and Mongo!!!
 first even MEVN stack app
 
-## Setup Development Machine
+## Setup Dev Machine
 1. Clone the repo `git clone git@github.com:LonJonn/Thats-My-Jam-v2.git`
 
 2. Navigate into it `cd Thats-My-Jam-v2`
