@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 const fs = require('fs')
 const path = require('path')
 const ytdl = require('youtube-dl')
@@ -51,7 +49,7 @@ module.exports = {
 
         let downloadInfo = setInterval(function() {
           downloaded = (fs.statSync(videoFile).size / 1048576).toFixed(1)
-          percentage = (downloaded / sizeMb * 100).toFixed(0)
+          percentage = ((downloaded / sizeMb) * 100).toFixed(0)
         }, 500)
 
         jam.on('end', function() {

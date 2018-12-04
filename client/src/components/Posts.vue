@@ -72,7 +72,7 @@ export default {
 </script>
 <style type="text/css">
 .table-wrap {
-  width: 40%;
+  width: 50%;
   margin: 0 auto;
   text-align: center;
 }

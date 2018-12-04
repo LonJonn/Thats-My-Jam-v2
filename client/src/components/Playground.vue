@@ -53,7 +53,14 @@ export default {
         this.getDownloadInfo()
         if (!this.downloadInfo.downloading) {
           clearInterval(loadTimer)
-          this.$swal('Great!', 'Download Complete!', 'success')
+          this.$swal({
+            title: 'Download Finished!',
+            type: 'success',
+            toast: true,
+            position: 'top-start',
+            timer: 4000,
+            showConfirmButton: false
+          })
           this.getFiles()
         }
       }, 500)
@@ -80,11 +87,11 @@ export default {
           // if confirmed
           await FilesService.deleteFile(file)
           $this.getFiles()
-          $this.$swal({
-            title: 'Bye Bye!',
-            text: 'File Deleted!',
-            type: 'success'
-          })
+          // $this.$swal({
+          //   title: 'Bye Bye!',
+          //   text: 'File Deleted!',
+          //   type: 'success'
+          // })
         }
       })
     },
@@ -116,7 +123,7 @@ export default {
               type: 'success',
               toast: true,
               position: 'top-start',
-              timer: 5000,
+              timer: 3000,
               showConfirmButton: false
             })
             let updateDownloadInfo = setInterval(() => {
@@ -128,7 +135,14 @@ export default {
               clearInterval(updateDownloadInfo)
               this.getDownloadInfo()
               this.getFiles()
-              this.$swal('Great!', 'Download Complete!', 'success')
+              this.$swal({
+                title: 'Download Finished!',
+                type: 'success',
+                toast: true,
+                position: 'top-start',
+                timer: 4000,
+                showConfirmButton: false
+              })
             })
           } else {
             this.$swal({
