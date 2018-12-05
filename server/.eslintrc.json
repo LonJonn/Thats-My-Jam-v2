@@ -4,6 +4,7 @@
     "node": true
   },
   "extends": [
+    "eslint:recommended",
     "plugin:prettier/recommended"
   ],
   "parserOptions": {
@@ -11,6 +12,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "no-console": "off"
   }
 }

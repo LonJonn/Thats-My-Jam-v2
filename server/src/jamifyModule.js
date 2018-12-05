@@ -12,7 +12,9 @@ module.exports = {
   download: function(url) {
     console.log(url);
     return new Promise(resolve => {
-      downloaded = sizeMb = percentage = 0;
+      let downloaded = 0;
+      let sizeMb = 0;
+      let percentage = 0;
       let thumbSaveDir = path.join(__dirname, "../static/files/");
       let videoSaveDir = path.join(__dirname, "../static/files/");
       [thumbSaveDir, videoSaveDir].forEach(n => {
@@ -22,7 +24,7 @@ module.exports = {
       let video = ytdl(url);
 
       video.on("info", function(info) {
-        cleanTitle = sanitise(info.title);
+        let cleanTitle = sanitise(info.title);
         console.log("\x1b[35m%s\x1b[0m", "[Download Started]\n" + cleanTitle);
         sizeMb = (info.size / 1048576).toFixed(1);
         console.log("Size:", sizeMb, "mb");
