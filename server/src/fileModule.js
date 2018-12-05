@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require('path')
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
   /**
@@ -8,14 +8,14 @@ module.exports = {
    */
   readDir: function(dir) {
     return new Promise(resolve => {
-      let filesClean = new Array()
+      let filesClean = new Array();
       fs.readdir(path.join(__dirname, dir), (err, files) => {
         files.forEach(file => {
-          if (!file.startsWith('.')) filesClean.push(file)
-        })
-        resolve(filesClean)
-      })
-    })
+          if (!file.startsWith(".")) filesClean.push(file);
+        });
+        resolve(filesClean);
+      });
+    });
   },
   /**
    * Deletes file on server.
@@ -23,11 +23,11 @@ module.exports = {
    */
   deleteFile: function(filePath) {
     return new Promise((resolve, reject) => {
-      fs.unlink(path.join(__dirname, '../static/files/' + filePath), err => {
-        if (err) reject(err)
+      fs.unlink(path.join(__dirname, "../static/files/" + filePath), err => {
+        if (err) reject(err);
 
-        resolve(filePath)
-      })
-    })
+        resolve(filePath);
+      });
+    });
   }
-}
+};

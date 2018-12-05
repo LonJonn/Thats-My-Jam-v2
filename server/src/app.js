@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 // const morgan = require('morgan')
-const path = require("path");
+const pasth = require("path");
 
 const app = express();
 // app.use(morgan('dev'))
@@ -36,11 +36,10 @@ app.delete("/delete_file/:file", (req, res) => {
     })
     .catch(error => {
       console.log(error); // if error, log error
-      res.status(404).send("File not found!\nNo file deleted.")
+      res.status(404).send("File not found!\nNo file deleted.");
     });
 });
 // ------------------End Files---------------------
-
 
 // -------------------Jammify----------------------
 app.post("/download_video", (req, res) => {
@@ -65,8 +64,6 @@ app.post("/check_link", (req, res) => {
     });
 });
 // ------------------End Jammify---------------------
-
-
 
 app.get("/posts", (req, res) => {
   //get posts from API on 8081

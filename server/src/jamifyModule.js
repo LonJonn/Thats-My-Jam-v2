@@ -47,7 +47,7 @@ module.exports = {
 
         let downloadInfo = setInterval(function() {
           downloaded = (fs.statSync(videoFile).size / 1048576).toFixed(1);
-          percentage = (downloaded / sizeMb * 100).toFixed(0);
+          percentage = ((downloaded / sizeMb) * 100).toFixed(0);
         }, 500);
 
         video.on("end", function() {
