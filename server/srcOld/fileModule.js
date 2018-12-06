@@ -25,6 +25,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       fs.unlink(path.join(__dirname, "../static/files/" + filePath), err => {
         if (err) reject(err);
+
         resolve(filePath);
       });
     });
