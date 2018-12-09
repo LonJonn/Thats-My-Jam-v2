@@ -2,7 +2,6 @@
   <div>
     <h1>Playground</h1>
     Sugoi woi woi!!<br><br>
-    <div v-show="searching">Getting Info...</div>
     <Files />
     <br><br>
     <input

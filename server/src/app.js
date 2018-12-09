@@ -17,6 +17,7 @@ const io = socket(server);
 const mongodb_conn_module = require("./mongodbConnModule"); //import the mongodb connection function
 mongodb_conn_module.connect(); //connect to mongo database
 
+// --------------------Socket--------------------
 io.on("connection", function(client) {
   console.log("User connected:", client.id);
   client.on("disconnect", () => {
@@ -31,19 +32,20 @@ io.on("connection", function(client) {
     timer(client);
   });
 });
+// ------------------End Socket------------------
 
 const fileModule = require("./fileModule");
 const jamifyModule = require("./jamifyModule");
 
 // ---------------------Misc---------------------
-function timer(reciever) {
+function timer(client) {
   let downloaded = 0;
   let info = setInterval(() => {
-    reciever.emit("downloadPer", downloaded);
+    client.emit("downloadPer", downloaded);
     downloaded = downloaded + 5;
     if (downloaded > 100) {
       clearInterval(info);
-      reciever.emit("finished");
+      client.emit("finished");
     }
   }, 100);
 }
@@ -60,6 +62,7 @@ app.delete("/delete_file/:file", async (req, res) => {
     const file = await fileModule.deleteFile(req.params.file);
     console.log("[File Deleted]", file); // log deleted file on server
     res.send("[File Deleted] " + file); // response (if I need to use on client)
+    io.emit("getFiles");
   } catch (error) {
     console.error(error); // if error, log error
     res.status(404).send("File not found!\nNo file deleted.");
@@ -68,8 +71,14 @@ app.delete("/delete_file/:file", async (req, res) => {
 // ------------------End Files-------------------
 
 // -------------------Jammify--------------------
-app.post("/check_link", async (req, res) => {
-  const result = await jamifyModule.checkLink(req.body.link);
-  res.send(result);
+app.post("/check_link", (req, res) => {
+  jamifyModule
+    .checkLink(req.body.link)
+    .then(result => {
+      res.send(result);
+    })
+    .catch(error => {
+      res.send(error);
+    });
 });
 // -----------------End Jammify------------------

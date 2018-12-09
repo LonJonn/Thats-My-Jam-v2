@@ -41,6 +41,11 @@ export default {
   mounted() {
     this.getFiles();
   },
+  sockets: {
+    getFiles: function() {
+      this.getFiles();
+    }
+  },
   methods: {
     async getFiles() {
       const response = await FilesService.fetchFiles();
@@ -59,7 +64,6 @@ export default {
     },
 
     async deleteFile(file) {
-      const $this = this;
       this.$swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -68,10 +72,9 @@ export default {
         confirmButtonColor: "#e74c3c",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!"
-      }).then(async function(result) {
+      }).then(function(result) {
         if (result.value) {
-          await FilesService.deleteFile(file);
-          $this.getFiles();
+          FilesService.deleteFile(file);
         }
       });
     }
