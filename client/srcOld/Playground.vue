@@ -102,20 +102,11 @@ export default {
         title: "Are you sure?",
         text: "You won't be able to revert this!",
         type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#e74c3c",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!"
+        showCancelButton: true
       }).then(async function(result) {
         if (result.value) {
-          // if confirmed
           await FilesService.deleteFile(file);
           $this.getFiles();
-          // $this.$swal({
-          //   title: 'Bye Bye!',
-          //   text: 'File Deleted!',
-          //   type: 'success'
-          // })
         }
       });
     },

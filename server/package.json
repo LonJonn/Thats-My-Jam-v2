@@ -19,6 +19,7 @@
     "node-pre-gyp": "^0.10.0",
     "nodemon": "^1.12.1",
     "sanitize-filename": "^1.6.1",
+    "socket.io": "^2.2.0",
     "youtube-dl": "^1.12.2"
   },
   "devDependencies": {

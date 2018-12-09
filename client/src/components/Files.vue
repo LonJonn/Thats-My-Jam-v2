@@ -1,0 +1,84 @@
+<template>
+  <div>
+    <h3>files</h3>
+    <div v-if="loadingFiles">Loading...</div>
+    <div v-else-if="filesList.length === 0">No Downloads...</div>
+    <div
+      v-else
+      v-for="file in filesList"
+      :key="file"
+    >
+      <span>
+        <td>{{ file }}</td> -
+        <a :href="'http://localhost:8081/files/'+file"> open</a> |
+        <a
+          href="#"
+          @click="downloadFile(file)"
+        >download</a> -
+        <a
+          href="#"
+          style="color:#f44336"
+          @click="deleteFile(file)"
+        >delete</a>
+      </span>
+    </div>
+  </div>
+</template>
+
+<script>
+import DownloadService from "../services/DownloadService";
+import FilesService from "../services/FilesService";
+
+export default {
+  name: "Files",
+  props: {},
+  data() {
+    return {
+      loadingFiles: true,
+      filesList: []
+    };
+  },
+  mounted() {
+    this.getFiles();
+  },
+  methods: {
+    async getFiles() {
+      const response = await FilesService.fetchFiles();
+      this.filesList = response.data;
+      this.loadingFiles = false;
+    },
+
+    async downloadFile(file, name) {
+      let nameFixed;
+      if (name) nameFixed = name + "." + file.split(".")[1];
+      await DownloadService.save(
+        "http://localhost:8081/files/",
+        file,
+        nameFixed
+      );
+    },
+
+    async deleteFile(file) {
+      const $this = this;
+      this.$swal({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#e74c3c",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async function(result) {
+        if (result.value) {
+          await FilesService.deleteFile(file);
+          $this.getFiles();
+        }
+      });
+    }
+  }
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
