@@ -16,12 +16,6 @@ export default {
       link.click();
     });
   },
-  getDownloadInfo() {
-    return Api().get("download_info"); // return result from server
-  },
-  downloadVideo(params) {
-    return Api().post("download_video", params);
-  },
   checkLink(params) {
     return Api().post("check_link", params);
   }

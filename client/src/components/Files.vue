@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h3>files</h3>
+    <u>
+      <h3>files</h3>
+    </u>
     <div v-if="loadingFiles">Loading...</div>
     <div v-else-if="filesList.length === 0">No Downloads...</div>
     <div
@@ -31,7 +33,6 @@ import FilesService from "../services/FilesService";
 
 export default {
   name: "Files",
-  props: {},
   data() {
     return {
       loadingFiles: true,
@@ -43,6 +44,9 @@ export default {
   },
   sockets: {
     getFiles: function() {
+      this.getFiles();
+    },
+    downloadFinished: function() {
       this.getFiles();
     }
   },
@@ -64,6 +68,7 @@ export default {
     },
 
     async deleteFile(file) {
+      const $this = this;
       this.$swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -75,6 +80,14 @@ export default {
       }).then(function(result) {
         if (result.value) {
           FilesService.deleteFile(file);
+          $this.$swal({
+            title: "File Deleted!",
+            type: "success",
+            toast: true,
+            position: "top-start",
+            timer: 4000,
+            showConfirmButton: false
+          });
         }
       });
     }

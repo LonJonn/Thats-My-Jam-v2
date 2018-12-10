@@ -3,67 +3,24 @@
     <h1>Playground</h1>
     Sugoi woi woi!!<br><br>
     <Files />
-    <br><br>
-    <input
-      v-model="something"
-      type="text"
-    >
-    <button @click="sendMessage(something)"> Clicky!</button>
-    <br><br>
-    <button @click="startDownload">Download!</button><br>
-    <progress
-      v-bind:value="percentage"
-      max="100"
-    ></progress>
+    <VideoDownloader />
   </div>
 </template>
 
 <script>
 import Files from "@/components/Files.vue";
+import VideoDownloader from "@/components/VideoDownloader.vue";
 
 export default {
   name: "playground",
   components: {
-    Files
+    Files,
+    VideoDownloader
   },
-  mounted() {},
   data() {
-    return {
-      percentage: 0,
-      something: "strange"
-    };
+    return {};
   },
-  sockets: {
-    downloadPer: function(per) {
-      this.percentage = per;
-    },
-
-    finished: function() {
-      this.$swal({
-        title: "Download Finished!",
-        type: "success",
-        toast: true,
-        position: "top-start",
-        timer: 4000,
-        showConfirmButton: false
-      });
-      this.percentage = 0;
-    },
-
-    messages: function(data) {
-      console.log("Recieved!: ", data);
-    }
-  },
-  methods: {
-    sendMessage: function(msg) {
-      console.log("Sent!: ", msg);
-      this.$socket.emit("newMessage", msg);
-    },
-
-    startDownload: function() {
-      this.$socket.emit("startDownload");
-    }
-  }
+  methods: {}
 };
 </script>
 

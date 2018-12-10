@@ -24,12 +24,8 @@ io.on("connection", function(client) {
     console.log("User disconnected:", client.id);
   });
 
-  client.on("newMessage", function(msg) {
-    client.broadcast.emit("messages", msg);
-  });
-
-  client.on("startDownload", function() {
-    timer(client);
+  client.on("startVideoDownload", function(link) {
+    jamifyModule.downloadVideo(link, client);
   });
 });
 // ------------------End Socket------------------
@@ -38,17 +34,7 @@ const fileModule = require("./fileModule");
 const jamifyModule = require("./jamifyModule");
 
 // ---------------------Misc---------------------
-function timer(client) {
-  let downloaded = 0;
-  let info = setInterval(() => {
-    client.emit("downloadPer", downloaded);
-    downloaded = downloaded + 5;
-    if (downloaded > 100) {
-      clearInterval(info);
-      client.emit("finished");
-    }
-  }, 100);
-}
+
 // -------------------End Misc-------------------
 
 // ---------------------Files--------------------
@@ -71,14 +57,8 @@ app.delete("/delete_file/:file", async (req, res) => {
 // ------------------End Files-------------------
 
 // -------------------Jammify--------------------
-app.post("/check_link", (req, res) => {
-  jamifyModule
-    .checkLink(req.body.link)
-    .then(result => {
-      res.send(result);
-    })
-    .catch(error => {
-      res.send(error);
-    });
+app.post("/check_link", async (req, res) => {
+  const result = await jamifyModule.checkLink(req.body.link);
+  res.send(result);
 });
 // -----------------End Jammify------------------
