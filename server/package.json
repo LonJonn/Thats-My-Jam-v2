@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node ./node_modules/nodemon/bin/nodemon.js src/app.js"
   },
@@ -10,14 +10,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.1",
+    "bcrypt": "^3.0.2",
+    "config": "^3.0.0",
     "cors": "^2.8.4",
     "express": "^4.15.4",
+    "joi": "^14.3.0",
+    "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
     "mongoose": "^5.0.16",
     "morgan": "^1.9.1",
     "node-fetch": "^2.3.0",
     "node-pre-gyp": "^0.10.0",
-    "nodemon": "^1.12.1",
+    "nodemon": "^1.18.9",
     "sanitize-filename": "^1.6.1",
     "socket.io": "^2.2.0",
     "youtube-dl": "^1.12.2"
@@ -27,5 +31,23 @@
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
     "prettier": "^1.15.3"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2017,
+      "sourceType": "module"
+    },
+    "rules": {
+      "prettier/prettier": "error",
+      "no-console": "off"
+    }
   }
 }

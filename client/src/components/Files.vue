@@ -7,7 +7,7 @@
     <div v-else-if="filesList.length === 0">No Downloads...</div>
     <div
       v-else
-      v-for="(index, file) in filesList"
+      v-for="(file, index) in filesList"
       :key="index"
     >
       <span>
@@ -43,9 +43,6 @@ export default {
     this.getFiles();
   },
   sockets: {
-    getFiles: function() {
-      this.getFiles();
-    },
     downloadFinished: function() {
       this.getFiles();
     }
@@ -67,7 +64,7 @@ export default {
       );
     },
 
-    async deleteFile(file) {
+    deleteFile(file) {
       const $this = this;
       this.$swal({
         title: "Are you sure?",
@@ -77,9 +74,9 @@ export default {
         confirmButtonColor: "#e74c3c",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!"
-      }).then(function(result) {
+      }).then(async function(result) {
         if (result.value) {
-          FilesService.deleteFile(file);
+          await FilesService.deleteFile(file);
           $this.$swal({
             title: "File Deleted!",
             type: "success",
@@ -88,6 +85,7 @@ export default {
             timer: 4000,
             showConfirmButton: false
           });
+          $this.getFiles();
         }
       });
     }
