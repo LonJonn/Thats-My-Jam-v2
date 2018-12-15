@@ -7,8 +7,8 @@
     <div v-else-if="filesList.length === 0">No Downloads...</div>
     <div
       v-else
-      v-for="file in filesList"
-      :key="file"
+      v-for="(index, file) in filesList"
+      :key="index"
     >
       <span>
         <td>{{ file }}</td> -
