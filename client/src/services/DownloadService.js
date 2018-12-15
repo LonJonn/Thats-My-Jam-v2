@@ -17,6 +17,6 @@ export default {
     });
   },
   checkLink(params) {
-    return Api().post("check_link", params);
+    return Api().post("jammify/check_link", params);
   }
 };

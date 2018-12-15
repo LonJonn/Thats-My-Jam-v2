@@ -5,6 +5,6 @@ export default {
     return Api().get("get_files");
   },
   deleteFile(file) {
-    return Api().delete("delete_file/" + file);
+    return Api().delete("files/delete_file/" + file);
   }
 };

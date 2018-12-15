@@ -34,12 +34,12 @@ const fileModule = require("./fileModule");
 const jamifyModule = require("./jamifyModule");
 
 // ---------------------Files--------------------
-app.get("/api/get_files", async (req, res) => {
+app.get("/api/files/get_files", async (req, res) => {
   const response = await fileModule.readDir("../static/files");
   res.send(response);
 });
 
-app.delete("/api/delete_file/:file", async (req, res) => {
+app.delete("/api/files/delete_file/:file", async (req, res) => {
   try {
     const file = await fileModule.deleteFile(req.params.file);
     console.log("[File Deleted]", file); // log deleted file on server
@@ -53,8 +53,10 @@ app.delete("/api/delete_file/:file", async (req, res) => {
 // ------------------End Files-------------------
 
 // -------------------Jammify--------------------
-app.post("/api/check_link", async (req, res) => {
+app.post("/api/jammify/check_link", async (req, res) => {
   const result = await jamifyModule.checkLink(req.body.link);
   res.send(result);
 });
 // -----------------End Jammify------------------
+
+app.post("api/users/", async (req, res) => {});
