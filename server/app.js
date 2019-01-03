@@ -14,6 +14,7 @@ if (!config.get("jwtPrivateKey")) {
   process.exit(1);
 }
 
+mongoose.set("useNewUrlParser", true).set("useCreateIndex", true);
 mongoose
   .connect("mongodb://localhost/ThatsMyJam")
   .then(() => console.log("Connected to MongoDB..."))

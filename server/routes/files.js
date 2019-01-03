@@ -8,10 +8,10 @@ router.get("/", async (req, res) => {
   res.send(response);
 });
 
-router.delete("/:file", async (req, res) => {
+router.delete("/:file", (req, res) => {
   try {
-    const file = await deleteFile(req.params.file);
-    res.send("[File Deleted] " + file); // response (if I need to use on client)
+    fs.unlinkSync(path.join(__dirname, "../static/files/" + req.params.file));
+    res.send("[File Deleted] " + req.params.file);
   } catch (error) {
     res.status(404).send("File not found!\nNo file deleted.");
   }
@@ -25,15 +25,6 @@ function readDir(dir) {
         if (!file.startsWith(".")) filesClean.push(file);
       });
       resolve(filesClean);
-    });
-  });
-}
-
-function deleteFile(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.unlink(path.join(__dirname, "../static/files/" + filePath), err => {
-      if (err) reject(err);
-      resolve(filePath);
     });
   });
 }
