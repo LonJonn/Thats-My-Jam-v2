@@ -5,29 +5,19 @@
     </u>
     <div v-if="loadingFiles">Loading...</div>
     <div v-else-if="filesList.length === 0">No Downloads...</div>
-    <div
-      v-else
-      v-for="(file, index) in filesList"
-      :key="index"
-    >
+    <div v-else v-for="(file, index) in filesList" :key="index">
       <span>
-        <td>{{ file }}</td> -
-        <a :href="'http://localhost:8081/files/'+file"> open</a> |
-        <a
-          href="#"
-          @click="downloadFile(file)"
-        >download</a> -
-        <a
-          href="#"
-          style="color:#f44336"
-          @click="deleteFile(file)"
-        >delete</a>
+        <td>{{ file }}</td>-
+        <a :href="'http://localhost:8081/files/'+file">open</a> |
+        <a href="#" @click="downloadFile(file)">download</a> -
+        <a href="#" style="color:#f44336" @click="deleteFile(file)">delete</a>
       </span>
     </div>
   </div>
 </template>
 
 <script>
+import swal from "sweetalert2";
 import DownloadService from "../services/DownloadService";
 import FilesService from "../services/FilesService";
 
@@ -65,8 +55,7 @@ export default {
     },
 
     deleteFile(file) {
-      const $this = this;
-      this.$swal({
+      swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
         type: "warning",
@@ -74,10 +63,10 @@ export default {
         confirmButtonColor: "#e74c3c",
         cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, delete it!"
-      }).then(async function(result) {
+      }).then(async result => {
         if (result.value) {
           await FilesService.deleteFile(file);
-          $this.$swal({
+          swal({
             title: "File Deleted!",
             type: "success",
             toast: true,
@@ -85,7 +74,7 @@ export default {
             timer: 4000,
             showConfirmButton: false
           });
-          $this.getFiles();
+          this.getFiles();
         }
       });
     }

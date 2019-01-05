@@ -3,30 +3,24 @@
     <u>
       <h3>video downloader</h3>
     </u>
-    <input
-      type="text"
-      name="link"
-      id="link"
-      placeholder="Enter your link here!"
-      v-model='link'
-    >
+    <input type="text" name="link" id="link" placeholder="Enter your link here!" v-model="link">
     <br>
-    <a
-      @click='downloadVideo'
-      href="#"
-      class="button"
-    >Download</a>
-    <div v-show="searching"><br>Getting Info...</div>
+    <a @click="downloadVideo" href="#" class="button">Download</a>
+    <div v-show="searching">
+      <br>Getting Info...
+    </div>
     <div id="downloadInfo">
       <h4>Download Info.</h4>
       <div v-if="!downloadInfo.downloading">No active downloads.</div>
       <div v-else>
-        <b>Current Download:</b> {{ downloadInfo.filename }} <br>
-        <b>Downloaded:</b> {{ downloadInfo.downloaded }} / {{ downloadInfo.size }} mb<br>
-        <progress
-          max="100"
-          :value=downloadInfo.percentage
-        ></progress> {{ downloadInfo.percentage }}%
+        <b>Current Download:</b>
+        {{ downloadInfo.filename }}
+        <br>
+        <b>Downloaded:</b>
+        {{ downloadInfo.downloaded }} / {{ downloadInfo.size }} mb
+        <br>
+        <progress max="100" :value="downloadInfo.percentage"></progress>
+        {{ downloadInfo.percentage }}%
       </div>
     </div>
   </div>

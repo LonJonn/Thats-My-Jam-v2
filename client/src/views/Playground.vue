@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h1>Playground</h1>
-    Sugoi woi woi!!<br><br>
-    <Files />
-    <VideoDownloader />
+    <h1>Playground</h1>Sugoi woi woi!!
+    <br>
+    <br>
+    <Files/>
+    <VideoDownloader/>
   </div>
 </template>
 
