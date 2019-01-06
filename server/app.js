@@ -1,10 +1,11 @@
 const config = require("config");
 const mongoose = require("mongoose");
 const socket = require("socket.io");
-const files = require("./routes/files");
-const videos = require("./routes/videos");
-const users = require("./routes/users");
-const auth = require("./routes/auth");
+const downloadVideo = require("./functions/downloadVideo");
+const filesRoute = require("./routes/files");
+const videosRoute = require("./routes/videos");
+const usersRoute = require("./routes/users");
+const authRoute = require("./routes/auth");
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -16,17 +17,17 @@ if (!config.get("jwtPrivateKey")) {
 
 mongoose.set("useNewUrlParser", true).set("useCreateIndex", true);
 mongoose
-  .connect("mongodb://localhost/ThatsMyJam")
+  .connect("mongodb://localhost/jammify")
   .then(() => console.log("Connected to MongoDB..."))
   .catch(() => console.error("Could not connect to MongoDB"));
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("static"));
-app.use("/api/videos", videos.router);
-app.use("/api/files", files);
-app.use("/api/users", users);
-app.use("/api/auth", auth);
+app.use("/api/videos", videosRoute);
+app.use("/api/files", filesRoute);
+app.use("/api/users", usersRoute);
+app.use("/api/auth", authRoute);
 
 const server = app.listen(process.env.PORT || 8081);
 const io = socket(server);
@@ -39,7 +40,7 @@ io.on("connection", function(client) {
   });
 
   client.on("startVideoDownload", function(link) {
-    videos.download(link, client);
+    downloadVideo(link, client);
   });
 });
 // ------------------End Socket------------------

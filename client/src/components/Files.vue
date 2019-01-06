@@ -1,16 +1,14 @@
 <template>
   <div>
-    <u>
-      <h3>files</h3>
-    </u>
-    <div v-if="loadingFiles">Loading...</div>
+    <p class="subtitle">Files</p>
+    <div v-if="loadingFiles">loading...</div>
     <div v-else-if="filesList.length === 0">No Downloads...</div>
     <div v-else v-for="(file, index) in filesList" :key="index">
       <span>
         <td>{{ file }}</td>-
         <a :href="'http://localhost:8081/files/'+file">open</a> |
-        <a href="#" @click="downloadFile(file)">download</a> -
-        <a href="#" style="color:#f44336" @click="deleteFile(file)">delete</a>
+        <a @click="downloadFile(file)">download</a> -
+        <a style="color:#f44336" @click="deleteFile(file)">delete</a>
       </span>
     </div>
   </div>

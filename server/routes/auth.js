@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
-const { User } = require("../models/user");
+const { userObj, User } = require("../models/user");
 const express = require("express");
 const router = express.Router();
 
@@ -22,12 +22,12 @@ router.post("/", async (req, res) => {
 function validate(req) {
   const schema = {
     username: Joi.string()
-      .min(5)
-      .max(255)
+      .min(userObj.username.minlength)
+      .max(userObj.username.maxlength)
       .required(),
     password: Joi.string()
-      .min(5)
-      .max(255)
+      .min(userObj.password.minlength)
+      .max(userObj.password.maxlength)
       .required()
   };
 

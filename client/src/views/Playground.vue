@@ -1,10 +1,12 @@
 <template>
   <div>
-    <h1>Playground</h1>Sugoi woi woi!!
-    <br>
-    <br>
-    <Files/>
-    <VideoDownloader/>
+    <section class="section">
+      <div class="container">
+        <Files/>
+        <br>
+        <VideoDownloader/>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -18,31 +20,11 @@ export default {
     Files,
     VideoDownloader
   },
-  data() {
-    return {};
+  created() {
+    this.$Progress.start();
   },
-  methods: {}
+  mounted() {
+    this.$Progress.finish();
+  }
 };
 </script>
-
-<style lang="scss">
-a {
-  color: #4d7ef7;
-  text-decoration: none;
-}
-
-a.button {
-  display: block;
-  color: #f2f2f2;
-  background-color: #4d7ef7;
-  border-radius: 3px;
-  width: 90px;
-  margin: 10px auto 0;
-  padding: 5px 0;
-}
-
-input {
-  padding: 4px;
-  margin-bottom: 5px;
-}
-</style>

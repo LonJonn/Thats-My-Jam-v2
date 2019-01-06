@@ -10,6 +10,12 @@ router.get("/me", auth, async (req, res) => {
   res.send(user);
 });
 
+router.post("/usernameAvailable", async (req, res) => {
+  const user = await User.findOne({ username: req.body.username });
+  if (user) return res.send(false);
+  res.send(true);
+});
+
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);

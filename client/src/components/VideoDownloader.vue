@@ -1,11 +1,10 @@
 <template>
   <div>
-    <u>
-      <h3>video downloader</h3>
-    </u>
+    <p class="subtitle">Video Downloader</p>
+
     <input type="text" name="link" id="link" placeholder="Enter your link here!" v-model="link">
     <br>
-    <a @click="downloadVideo" href="#" class="button">Download</a>
+    <a @click="downloadVideo" class="button">Download</a>
     <div v-show="searching">
       <br>Getting Info...
     </div>
@@ -27,6 +26,7 @@
 </template>
 
 <script>
+import swal from "sweetalert2";
 import DownloadService from "../services/DownloadService";
 
 export default {
@@ -42,7 +42,7 @@ export default {
   },
   sockets: {
     downloadFinished: function() {
-      this.$swal({
+      swal({
         title: "Download Finished!",
         type: "success",
         toast: true,
@@ -66,7 +66,7 @@ export default {
       });
       this.searching = false;
       if (linkCheckResult.data) {
-        this.$swal({
+        swal({
           title: "Download Starting...",
           type: "success",
           toast: true,
@@ -76,7 +76,7 @@ export default {
         });
         return true;
       } else {
-        this.$swal({
+        swal({
           title: "Bwahhh!",
           html: "<b>Invalid Link!</b><br>Video not found...",
           type: "error"
