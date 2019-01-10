@@ -2,9 +2,10 @@
   <div>
     <section class="section">
       <div class="container">
-        <Files/>
+        <Files />
         <br>
-        <VideoDownloader/>
+        <VideoDownloader />
+        <Users />
       </div>
     </section>
   </div>
@@ -13,12 +14,14 @@
 <script>
 import Files from "@/components/Files.vue";
 import VideoDownloader from "@/components/VideoDownloader.vue";
+import Users from "@/components/Users.vue";
 
 export default {
   name: "playground",
   components: {
     Files,
-    VideoDownloader
+    VideoDownloader,
+    Users
   },
   created() {
     this.$Progress.start();
