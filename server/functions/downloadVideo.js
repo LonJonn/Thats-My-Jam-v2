@@ -6,7 +6,6 @@ const ytdl = require("youtube-dl");
 
 async function downloadVideo(url, client) {
   const saveDir = path.join(__dirname, "../static/files/");
-  if (!fs.existsSync(saveDir)) fs.mkdirSync(saveDir);
 
   const video = ytdl(url);
   video.on("info", info => {
