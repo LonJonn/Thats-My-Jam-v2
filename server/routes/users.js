@@ -1,42 +1,68 @@
+const joi = require("joi");
 const auth = require("../middleware/auth");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-const { User, validate } = require("../models/user");
+const { userObj, User } = require("../models/userModel");
 const express = require("express");
 const router = express.Router();
 
 router.get("/me", auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
-  res.send(user);
+  const foundUser = await User.findById(req.user._id).select("-password");
+  if (foundUser) return res.send(foundUser);
+  res.status(404).send("User doesn't exist.");
 });
 
 router.post("/usernameAvailable", async (req, res) => {
-  const user = await User.findOne({ username: req.body.username });
-  if (user) return res.send(false);
+  const foundUser = await User.findOne({ username: req.body.username });
+  if (foundUser) return res.send(false);
   res.send(true);
 });
 
 router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  const { error } = validateRegister(req.body);
+  if (error) return res.status(400).send(_.map(error.details, "message"));
 
-  let user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send("User already registered.");
+  let foundUser = await User.findOne({ email: req.body.email });
+  if (foundUser) return res.status(400).send("User already registered.");
 
-  user = await User.findOne({ username: req.body.username });
-  if (user) return res.status(400).send("Username already taken.");
+  foundUser = await User.findOne({ username: req.body.username });
+  if (foundUser) return res.status(400).send("Username already taken.");
 
-  user = new User(
+  let newUser = new User(
     _.pick(req.body, ["username", "email", "password", "isAdmin"])
   );
   const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-  await user.save();
+  newUser.password = await bcrypt.hash(newUser.password, salt);
+  await newUser.save();
 
-  const token = user.generateAuthToken();
+  const JWToken = newUser.generateAuthToken();
   res
-    .header("x-auth-token", token)
-    .send(_.pick(user, ["_id", "username", "email", "isAdmin"]));
+    .header("x-auth-token", JWToken)
+    .send(_.pick(newUser, ["_id", "username", "email", "isAdmin"]));
 });
+
+function validateRegister(user) {
+  const schema = {
+    username: joi
+      .string()
+      .min(userObj.username.minlength)
+      .max(userObj.username.maxlength)
+      .required(),
+    email: joi
+      .string()
+      .min(userObj.email.minlength)
+      .max(userObj.email.maxlength)
+      .required()
+      .email(),
+    password: joi
+      .string()
+      .min(userObj.password.minlength)
+      .max(userObj.password.maxlength)
+      .required(),
+    isAdmin: joi.bool().required()
+  };
+
+  return joi.validate(user, schema, { abortEarly: false });
+}
 
 module.exports = router;

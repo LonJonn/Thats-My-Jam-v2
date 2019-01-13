@@ -9,37 +9,38 @@ async function downloadVideo(url, client) {
   if (!fs.existsSync(saveDir)) fs.mkdirSync(saveDir);
 
   const video = ytdl(url);
-  return video.on("info", function(info) {
+  video.on("info", info => {
     const cleanTitle = sanitise(info.title);
-    const sizeMb = (info.size / 1048576).toFixed(1);
+    const sizeMb = Math.round((info.size / 1e6) * 1e1) / 1e1;
     console.log("\x1b[35m%s\x1b[0m", "[Download Started]\n" + cleanTitle);
     console.log("Size:", sizeMb, "mb");
 
-    let videoFile = saveDir + cleanTitle + ".mp4";
-    let thumbDir = saveDir + cleanTitle + ".jpg";
+    const videoDir = saveDir + cleanTitle + ".mp4";
+    const thumbDir = saveDir + cleanTitle + ".jpg";
 
-    let thumbLink = info.thumbnail.replace("https", "http");
+    const thumbLink = info.thumbnail.replace("https", "http");
     http.get(thumbLink, res => {
       res.pipe(fs.createWriteStream(thumbDir));
     });
 
-    video.pipe(fs.createWriteStream(videoFile));
+    video.pipe(fs.createWriteStream(videoDir));
 
-    let downloadInfo = setInterval(function() {
-      let downloadedMB = (fs.statSync(videoFile).size / 1048576).toFixed(1);
+    const downloadInfo = setInterval(() => {
+      let currentVideoSize = fs.statSync(videoDir).size;
+      let downloadedMB = Math.round((currentVideoSize / 1e6) * 1e1) / 1e1;
+
       client.emit("downloadInfo", {
-        downloading: true,
-        size: sizeMb,
         filename: cleanTitle,
+        size: sizeMb,
         downloaded: downloadedMB,
-        percentage: ((downloadedMB / sizeMb) * 100).toFixed(0)
+        percentage: Math.round((downloadedMB / sizeMb) * 100)
       });
     }, 500);
 
-    video.on("end", function() {
+    video.on("end", () => {
       clearInterval(downloadInfo);
-      console.log("\x1b[36m%s\x1b[0m", "[Download Finished]");
       client.emit("downloadFinished");
+      console.log("\x1b[36m%s\x1b[0m", "[Download Finished]");
     });
   });
 }

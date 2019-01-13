@@ -1,37 +1,39 @@
-const Joi = require("joi");
+const joi = require("joi");
 const bcrypt = require("bcrypt");
-const { userObj, User } = require("../models/user");
+const _ = require("lodash");
+const { userObj, User } = require("../models/userModel");
 const express = require("express");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  const { error } = validateLogin(req.body);
+  if (error) return res.status(400).send(_.map(error.details, "message"));
 
-  let user = await User.findOne({ username: req.body.username });
-  if (!user) return res.status(400).send("Invalid username or password.");
+  const foundUser = await User.findOne({ username: req.body.username });
+  if (!foundUser) return res.status(400).send("Invalid username or password.");
 
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword)
-    return res.status(400).send("Invalid username or password.");
+  const validPass = await bcrypt.compare(req.body.password, foundUser.password);
+  if (!validPass) return res.status(400).send("Invalid username or password.");
 
-  const token = user.generateAuthToken();
-  res.send(token);
+  const JWToken = foundUser.generateAuthToken();
+  res.send(JWToken);
 });
 
-function validate(req) {
+function validateLogin(info) {
   const schema = {
-    username: Joi.string()
+    username: joi
+      .string()
       .min(userObj.username.minlength)
       .max(userObj.username.maxlength)
       .required(),
-    password: Joi.string()
+    password: joi
+      .string()
       .min(userObj.password.minlength)
       .max(userObj.password.maxlength)
       .required()
   };
 
-  return Joi.validate(req, schema);
+  return joi.validate(info, schema, { abortEarly: false });
 }
 
 module.exports = router;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./node_modules/nodemon/bin/nodemon.js src/app.js"
+    "start": "NODE_ENV=production nodemon"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +21,6 @@
     "morgan": "^1.9.1",
     "node-fetch": "^2.3.0",
     "node-pre-gyp": "^0.10.0",
-    "nodemon": "^1.18.9",
     "sanitize-filename": "^1.6.1",
     "socket.io": "^2.2.0",
     "youtube-dl": "^1.12.2"

@@ -10,11 +10,8 @@ router.post("/check", async (req, res) => {
 function checkLink(url) {
   return new Promise(resolve => {
     ytdl.getInfo(url, err => {
-      if (err) {
-        resolve(false);
-      } else {
-        resolve(true);
-      }
+      if (err) resolve(false);
+      resolve(true);
     });
   });
 }
