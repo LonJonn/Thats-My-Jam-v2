@@ -1,6 +1,5 @@
 <template>
   <div>
-    <br>
     <p class="subtitle">Users</p>
     user: {{ this.$store.state.user }}
     <br>
@@ -16,7 +15,7 @@
     </div>
     <br>
     <br>
-    <input @input="debouncedGetAvailability" v-model="regUser" type="text">
+    <input @input="debouncedGetAvailable" v-model="regUser" type="text">
     <br>
     <input v-model="regEmail" type="text">
     <br>
@@ -38,17 +37,17 @@ export default {
   name: "Users",
   data() {
     return {
-      username: null,
-      password: null,
-      regUser: null,
-      regEmail: null,
-      regPass: null,
+      username: "",
+      password: "",
+      regUser: "",
+      regEmail: "",
+      regPass: "",
       regIsAdmin: false,
       usernameAvailble: null
     };
   },
   created: function() {
-    this.debouncedGetAvailability = _.debounce(this.getAvailability, 500);
+    this.debouncedGetAvailable = _.debounce(this.getAvailable, 500);
   },
   methods: {
     logInUser: async function() {
@@ -78,7 +77,7 @@ export default {
         console.error(error.response.data);
       }
     },
-    getAvailability: async function() {
+    getAvailable: async function() {
       this.usernameAvailble = "getting...";
       if (this.regUser.length <= 2) {
         this.usernameAvailble = null;

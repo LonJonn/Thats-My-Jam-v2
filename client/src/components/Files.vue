@@ -2,22 +2,20 @@
   <div>
     <p class="subtitle">Files</p>
     <div v-if="loadingFiles">loading...</div>
-    <div v-else-if="filesList.length === 0">No Downloads...</div>
+    <div v-else-if="!filesList">No Downloads...</div>
     <div v-else v-for="(file, index) in filesList" :key="index">
-      <span>
-        <td>{{ file }}</td>-
-        <a :href="'http://localhost:8081/files/'+file">open</a> |
-        <a @click="downloadFile(file)">download</a> -
-        <a style="color:#f44336" @click="deleteFile(file)">delete</a>
-      </span>
+      {{ file }} -
+      <a :href="'http://localhost:8081/files/'+file">open</a> |
+      <a @click="downloadFile(file)">download</a> -
+      <a style="color:#f44336" @click="deleteFile(file)">delete</a>
     </div>
   </div>
 </template>
 
 <script>
-import swal from "sweetalert2";
 import DownloadService from "../services/DownloadService";
 import FilesService from "../services/FilesService";
+import swal from "sweetalert2";
 
 export default {
   name: "Files",
@@ -36,23 +34,19 @@ export default {
     }
   },
   methods: {
-    async getFiles() {
+    getFiles: async function() {
       const response = await FilesService.fetchFiles();
       this.filesList = response.data;
       this.loadingFiles = false;
     },
 
-    async downloadFile(file, name) {
+    downloadFile: function(file, name) {
       let nameFixed;
       if (name) nameFixed = name + "." + file.split(".")[1];
-      await DownloadService.save(
-        "http://localhost:8081/files/",
-        file,
-        nameFixed
-      );
+      DownloadService.save("http://localhost:8081/files/", file, nameFixed);
     },
 
-    deleteFile(file) {
+    deleteFile: function(file) {
       swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -79,7 +73,3 @@ export default {
   }
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>

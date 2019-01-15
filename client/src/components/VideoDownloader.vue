@@ -1,7 +1,6 @@
 <template>
   <div>
     <p class="subtitle">Video Downloader</p>
-
     <input type="text" name="link" id="link" placeholder="Enter your link here!" v-model="link">
     <br>
     <a @click="downloadVideo" class="button">Download</a>
@@ -10,7 +9,7 @@
     </div>
     <div id="downloadInfo">
       <h4>Download Info.</h4>
-      <div v-if="!downloadInfo.downloading">No active downloads.</div>
+      <div v-if="!downloadInfo">No active downloads.</div>
       <div v-else>
         <b>Current Download:</b>
         {{ downloadInfo.filename }}
@@ -35,9 +34,7 @@ export default {
     return {
       link: "",
       searching: false,
-      downloadInfo: {
-        downloading: false
-      }
+      downloadInfo: null
     };
   },
   sockets: {
@@ -50,45 +47,33 @@ export default {
         timer: 4000,
         showConfirmButton: false
       });
-      this.downloadInfo = {
-        downloading: false
-      };
+      this.downloadInfo = null;
     },
+
     downloadInfo: function(info) {
       this.downloadInfo = info;
     }
   },
   methods: {
-    checkLink: async function() {
+    downloadVideo: async function() {
       this.searching = true;
-      const linkCheckResult = await DownloadService.checkLink({
-        link: this.link
-      });
+      this.link = "";
+      const linkFound = (await DownloadService.checkLink(this.link)).data;
       this.searching = false;
-      if (linkCheckResult.data) {
+      if (linkFound) {
         swal({
           title: "Download Starting...",
           type: "success",
           toast: true,
-          position: "top-start",
-          timer: 3000,
           showConfirmButton: false
         });
-        return true;
+        this.$socket.emit("startVideoDownload", this.link);
       } else {
         swal({
           title: "Bwahhh!",
           html: "<b>Invalid Link!</b><br>Video not found...",
           type: "error"
         });
-        this.link = "";
-        return false;
-      }
-    },
-    downloadVideo: async function() {
-      if (await this.checkLink()) {
-        this.$socket.emit("startVideoDownload", this.link);
-        this.link = "";
       }
     }
   }

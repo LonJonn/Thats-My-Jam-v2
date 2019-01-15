@@ -1,13 +1,9 @@
 <template>
   <div id="app">
-    <!-- <section class="hero is-primary is-medium">
-    <div class="hero-body">-->
     <div class="container">
       <h1 class="title">Playground</h1>
       <h2 class="subtitle">Sugoi Woi Woi</h2>
     </div>
-    <!-- </div>
-    </section>-->
     <router-view/>
     <vue-progress-bar></vue-progress-bar>
   </div>
@@ -26,7 +22,6 @@ export default {
 
 <style lang="scss">
 @import "~bulma/sass/utilities/_all";
-@import url("https://fonts.googleapis.com/css?family=Nunito:400,700");
 
 // Set your brand colors
 $purple: #8a4d76;
@@ -36,7 +31,6 @@ $beige-light: #d0d1cd;
 $beige-lighter: #eff0eb;
 
 // Update Bulma's global variables
-$family-sans-serif: "Nunito", sans-serif;
 $grey-dark: $brown;
 $grey-light: $beige-light;
 $primary: $purple;

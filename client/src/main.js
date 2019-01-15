@@ -6,7 +6,7 @@ import store from "./store"
 import Buefy from "buefy"
 import VueProgressBar from 'vue-progressbar'
 
-import 'buefy/dist/buefy.css'
+import 'buefy/dist/buefy.css' //remove for custom styling
 
 Vue.config.productionTip = false;
 Vue.use(Buefy);

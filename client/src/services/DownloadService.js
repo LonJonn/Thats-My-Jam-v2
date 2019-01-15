@@ -2,21 +2,21 @@ import axios from "axios";
 import Api from "../services/Api";
 
 export default {
-  save(url, file, name) {
+  save(baseUrl, file, name) {   //remove when merging
     axios({
-      url: url + file,
+      url: baseUrl + file,
       method: "GET",
       responseType: "blob"
     }).then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", name || file);
-      document.body.appendChild(link);
+      link.download = name || file;
       link.click();
     });
   },
-  checkLink(params) {
-    return Api().post("videos/check", params);
+
+  checkLink(link) {
+    return Api().post("videos/check", { link: link });
   }
 };

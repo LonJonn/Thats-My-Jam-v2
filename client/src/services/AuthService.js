@@ -1,27 +1,19 @@
 import Api from "../services/Api";
 
 export default {
-  async logInUser(user) {
-    return Api().post("auth", {
-      username: user.username,
-      password: user.password
-    });
+  async logInUser(userObj) {
+    return Api().post("auth", userObj);
   },
+  
+    registerUser(userObj) {
+      return Api().post("users", userObj)
+    },
 
-  getUserInfo(token) {
+  getUserInfo(JWToken) {
     return Api().get("users/me", {
       headers: {
-        "x-auth-token": token
+        "x-auth-token": JWToken
       }
-    })
-  },
-
-  registerUser(user) {
-    return Api().post("users", {
-      username: user.username,
-      email: user.email,
-      password: user.password,
-      isAdmin: user.isAdmin
     })
   },
 
