@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import VueSocketIO from "vue-socket.io";
 import store from "./store";
+import axios from "axios";
 import Buefy from "buefy";
 import VueProgressBar from "vue-progressbar";
 
@@ -21,6 +22,11 @@ Vue.use(VueProgressBar, {
   height: "2px"
 });
 
+const User = JSON.parse(localStorage.getItem("User"));
+if (User) {
+  store.commit("logInUser", User);
+  axios.defaults.headers.common["x-auth-token"] = User.JWToken;
+}
 new Vue({
   router,
   store,

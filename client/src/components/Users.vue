@@ -23,6 +23,7 @@
 <script>
 import AuthService from "../services/AuthService";
 import _ from "lodash";
+import axios from "axios";
 
 export default {
   name: "Users",
@@ -47,7 +48,8 @@ export default {
           username: this.username,
           password: this.password
         });
-        await this.$store.dispatch("fetchUser", response.data);
+        axios.defaults.headers.common["x-auth-token"] = response.data;
+        await this.$store.dispatch("fetchUser");
         const redirect = this.$route.params.redirect;
         if (redirect) this.$router.push(redirect.path);
       } catch (error) {

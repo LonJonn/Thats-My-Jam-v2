@@ -9,12 +9,9 @@ export default {
     return Api().post("users", userObj);
   },
 
-  getUserInfo(JWToken) {
-    return Api().get("users/me", {
-      headers: {
-        "x-auth-token": JWToken
-      }
-    });
+  //authed
+  getUserInfo() {
+    return Api().get("users/me");
   },
 
   usernameAvailable(username) {
