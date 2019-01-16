@@ -36,24 +36,17 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true,
-      "es6": true
+      "node": true
     },
     "extends": [
-      "eslint:recommended",
       "plugin:vue/essential",
-      "@vue/prettier",
-      "plugin:prettier/recommended"
+      "@vue/prettier"
     ],
     "rules": {
-      "prettier/prettier": "off",
-      "for-direction": "off",
-      "getter-return": "off",
       "no-console": "off"
     },
     "parserOptions": {
-      "parser": "babel-eslint",
-      "ecmaVersion": 2017
+      "parser": "babel-eslint"
     }
   },
   "postcss": {
