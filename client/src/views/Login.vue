@@ -1,9 +1,7 @@
 <template>
   <div>
     <section class="section">
-      <div class="container">
-        <Users/>
-      </div>
+      <div class="container"><Users /></div>
     </section>
   </div>
 </template>

@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import AuthService from './services/AuthService'
+import Vue from "vue";
+import Vuex from "vuex";
+import AuthService from "./services/AuthService";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -13,7 +13,7 @@ export default new Vuex.Store({
   },
   mutations: {
     logInUser(state, userObj) {
-      state.user = userObj
+      state.user = userObj;
     },
     logOutUser(state) {
       state.user = null;
@@ -22,8 +22,8 @@ export default new Vuex.Store({
   actions: {
     async fetchUser({ commit }, JWToken) {
       const response = await AuthService.getUserInfo(JWToken);
-      response.data.JWToken = JWToken
-      commit("logInUser", response.data)
+      response.data.JWToken = JWToken;
+      commit("logInUser", response.data);
     }
   }
-})
+});

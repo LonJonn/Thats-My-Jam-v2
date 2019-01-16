@@ -4,8 +4,7 @@
     <div v-if="loadingFiles">loading...</div>
     <div v-else-if="!filesList">No Downloads...</div>
     <div v-else v-for="(file, index) in filesList" :key="index">
-      {{ file }} -
-      <a :href="'http://localhost:8081/files/'+file">open</a> |
+      {{ file }} - <a :href="'http://localhost:8081/files/' + file">open</a> |
       <a @click="downloadFile(file)">download</a> -
       <a style="color:#f44336" @click="deleteFile(file)">delete</a>
     </div>

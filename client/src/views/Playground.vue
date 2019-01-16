@@ -2,9 +2,9 @@
   <div>
     <section class="section">
       <div class="container">
-        <Files/>
-        <br>
-        <VideoDownloader/>
+        <Files />
+        <br />
+        <VideoDownloader />
       </div>
     </section>
   </div>

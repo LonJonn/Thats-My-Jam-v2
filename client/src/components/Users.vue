@@ -1,30 +1,21 @@
 <template>
   <div>
     <p class="subtitle">Users</p>
-    user: {{ this.$store.state.user }}
-    <br>
-    <input v-model="username" type="text">
-    <br>
-    <input v-model="password" type="text">
-    <br>
+    user: {{ this.$store.state.user }} <br />
+    <input v-model="username" type="text" /> <br />
+    <input v-model="password" type="text" /> <br />
     <div v-if="!$store.state.user">
       <button @click="logInUser">Log in</button>
     </div>
-    <div v-else>
-      <button @click="logOutUser">Log Out</button>
-    </div>
-    <br>
-    <br>
-    <input @input="debouncedGetAvailable" v-model="regUser" type="text">
-    <br>
-    <input v-model="regEmail" type="text">
-    <br>
-    <input v-model="regPass" type="text">
-    <br>
-    <input v-model="regIsAdmin" type="checkbox">
-    <br>
-    <button @click="registerUser">register</button>
-    <br>
+    <div v-else><button @click="logOutUser">Log Out</button></div>
+    <br />
+    <br />
+    <input @input="debouncedGetAvailable" v-model="regUser" type="text" />
+    <br />
+    <input v-model="regEmail" type="text" /> <br />
+    <input v-model="regPass" type="text" /> <br />
+    <input v-model="regIsAdmin" type="checkbox" /> <br />
+    <button @click="registerUser">register</button> <br />
     Available? {{ usernameAvailble }}
   </div>
 </template>

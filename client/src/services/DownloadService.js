@@ -2,7 +2,8 @@ import axios from "axios";
 import Api from "../services/Api";
 
 export default {
-  save(baseUrl, file, name) {   //remove when merging
+  //remove when merging
+  save(baseUrl, file, name) {
     axios({
       url: baseUrl + file,
       method: "GET",

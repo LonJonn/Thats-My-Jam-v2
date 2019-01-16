@@ -4,9 +4,9 @@
       <h1 class="title">Playground</h1>
       <h2 class="subtitle">Sugoi Woi Woi</h2>
     </div>
-    <router-link to="/">Playground</router-link>|
+    <router-link to="/">Playground</router-link> |
     <router-link to="/login">Login</router-link>
-    <router-view/>
+    <router-view />
     <vue-progress-bar></vue-progress-bar>
   </div>
 </template>
