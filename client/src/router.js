@@ -7,11 +7,8 @@ import Login from "./views/Login.vue";
 Vue.use(Router);
 
 const requiresAuth = (to, from, next) => {
-  if (store.getters.isAuthenticated) {
-    next();
-    return;
-  }
-  next("/login");
+  if (store.getters.isAuthed) return next();
+  next({ name: "login", params: { requiresAuth: true, redirect: to } });
 };
 
 export default new Router({

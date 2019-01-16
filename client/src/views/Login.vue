@@ -1,7 +1,10 @@
 <template>
   <div>
     <section class="section">
-      <div class="container"><Users /></div>
+      <div class="container">
+        <div v-if="$route.params.requiresAuth">You need to log in</div>
+        <Users />
+      </div>
     </section>
   </div>
 </template>

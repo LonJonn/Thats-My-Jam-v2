@@ -47,7 +47,9 @@ export default {
           username: this.username,
           password: this.password
         });
-        this.$store.dispatch("fetchUser", response.data);
+        await this.$store.dispatch("fetchUser", response.data);
+        const redirect = this.$route.params.redirect;
+        if (redirect) this.$router.push(redirect.path);
       } catch (error) {
         console.error(error.response.data);
       }
