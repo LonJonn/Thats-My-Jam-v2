@@ -10,26 +10,32 @@ export default new Vuex.Store({
   state: {
     user: null
   },
+
   getters: {
     isAuthed: state => !!state.user
   },
+
   mutations: {
-    logInUser(state, userObj) {
+    setUser(state, userObj) {
       state.user = userObj;
     },
-    logOutUser(state) {
-      delete axios.defaults.headers.common["x-auth-token"];
-      localStorage.removeItem("User");
+    clearUser(state) {
       state.user = null;
-      Router.push("/login");
     }
   },
+
   actions: {
-    async fetchUser({ commit }) {
+    async logIn({ commit }, JWToken) {
+      axios.defaults.headers.common["x-auth-token"] = JWToken;
+      localStorage.setItem("JWToken", JWToken);
       const response = await AuthService.getUserInfo();
-      response.data.JWToken = axios.defaults.headers.common["x-auth-token"];
-      localStorage.setItem("User", JSON.stringify(response.data));
-      commit("logInUser", response.data);
+      commit("setUser", response.data);
+    },
+    logOut({ commit }) {
+      delete axios.defaults.headers.common["x-auth-token"];
+      localStorage.removeItem("JWToken");
+      commit("clearUser");
+      Router.push("/login");
     }
   }
 });

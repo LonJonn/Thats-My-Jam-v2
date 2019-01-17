@@ -4,7 +4,7 @@
     user: {{ this.$store.state.user }} <br />
     <input v-model="username" type="text" /> <br />
     <input v-model="password" type="text" /> <br />
-    <div v-if="!$store.state.user">
+    <div v-if="!$store.getters.isAuthed">
       <button @click="logInUser">Log in</button>
     </div>
     <div v-else><button @click="logOutUser">Log Out</button></div>
@@ -23,7 +23,6 @@
 <script>
 import AuthService from "../services/AuthService";
 import _ from "lodash";
-import axios from "axios";
 
 export default {
   name: "Users",
@@ -48,8 +47,8 @@ export default {
           username: this.username,
           password: this.password
         });
-        axios.defaults.headers.common["x-auth-token"] = response.data;
-        await this.$store.dispatch("fetchUser");
+        await this.$store.dispatch("logIn", response.data);
+
         const redirect = this.$route.params.redirect;
         if (redirect) this.$router.push(redirect.path);
       } catch (error) {
@@ -57,7 +56,7 @@ export default {
       }
     },
     logOutUser: function() {
-      this.$store.commit("logOutUser");
+      this.$store.dispatch("logOut");
     },
     registerUser: async function() {
       try {
