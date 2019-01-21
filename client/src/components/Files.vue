@@ -61,7 +61,7 @@ export default {
             title: "File Deleted!",
             type: "success",
             toast: true,
-            position: "top-start",
+            position: "top-end",
             timer: 4000,
             showConfirmButton: false
           });

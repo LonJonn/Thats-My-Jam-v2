@@ -44,7 +44,7 @@ export default {
         title: "Download Finished!",
         type: "success",
         toast: true,
-        position: "top-start",
+        position: "top-end",
         timer: 4000,
         showConfirmButton: false
       });
@@ -65,6 +65,7 @@ export default {
           title: "Download Starting...",
           type: "success",
           toast: true,
+          position: "top-end",
           showConfirmButton: false
         });
         this.$socket.emit("startVideoDownload", this.link);
