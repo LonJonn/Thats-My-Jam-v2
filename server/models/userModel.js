@@ -26,7 +26,13 @@ const userObj = {
   isAdmin: {
     type: Boolean,
     required: true
-  }
+  },
+  videos: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Video"
+    }
+  ]
 };
 
 const userSchema = new mongoose.Schema(userObj);

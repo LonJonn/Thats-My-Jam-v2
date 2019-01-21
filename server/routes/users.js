@@ -7,7 +7,10 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/me", auth, async (req, res) => {
-  const foundUser = await User.findById(req.user._id).select("-password");
+  const foundUser = await User.findById(req.user._id).select([
+    "-password",
+    "-videos"
+  ]);
   if (foundUser) return res.send(foundUser);
   res.status(404).send("User doesn't exist.");
 });
