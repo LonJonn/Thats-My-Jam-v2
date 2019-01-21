@@ -32,7 +32,9 @@ app.use("/api/users", usersRoute);
 app.use("/api/auth", authRoute);
 
 const server = app.listen(process.env.PORT || 8081);
-const io = socket(server);
+const io = socket(server, {
+  pingTimeout: 60000 // socket 2.2.0 timeout is off
+});
 
 // --------------------Socket--------------------
 io.on("connection", function(client) {
