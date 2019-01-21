@@ -74,8 +74,7 @@ export default {
     getAvailable: async function() {
       this.usernameAvailble = "getting...";
       if (this.regUser.length <= 2) {
-        this.usernameAvailble = null;
-        return;
+        return (this.usernameAvailble = null);
       }
       const response = await AuthService.usernameAvailable(this.regUser);
       this.usernameAvailble = response.data;

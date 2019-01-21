@@ -58,7 +58,6 @@ export default {
   methods: {
     downloadVideo: async function() {
       this.searching = true;
-      this.link = "";
       const linkFound = (await DownloadService.checkLink(this.link)).data;
       this.searching = false;
       if (linkFound) {
@@ -76,6 +75,7 @@ export default {
           type: "error"
         });
       }
+      this.link = "";
     }
   }
 };
