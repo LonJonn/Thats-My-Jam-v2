@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const videoObj = {
   // https://codeburst.io/things-i-wish-i-new-before-i-started-working-with-mongodb-c089d4b593db
+  // https://mongoosejs.com/docs/populate.html
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
