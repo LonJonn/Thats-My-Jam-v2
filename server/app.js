@@ -17,9 +17,11 @@ if (!config.get("jwtPrivateKey")) {
 
 mongoose.set("useNewUrlParser", true).set("useCreateIndex", true);
 mongoose
-  .connect("mongodb://localhost/jammify")
+  .connect(
+    "mongodb+srv://LonJonn:LonMongoDB181@jammify-mfcaa.gcp.mongodb.net/Jammify?retryWrites=true"
+  )
   .then(() => console.log("Connected to MongoDB..."))
-  .catch(() => console.error("Could not connect to MongoDB"));
+  .catch(err => console.error(err));
 
 app.use(cors());
 app.use(express.json());
