@@ -63,8 +63,11 @@ router.delete("/:videoId", auth, async (req, res) => {
   try {
     foundVideo = await Video.findById(req.params.videoId);
   } catch (error) {
-    res.status(404).send("Unable to delete. Video does not exist.");
+    return res.status(401).send("Unable to delete. Invalid video Id.");
   }
+
+  if (!foundVideo)
+    return res.status(404).send("Unable to delete. Video does not exist");
 
   const foundUser = await User.findById(req.user._id);
   const parsedVideos = foundUser.videos.map(id => id.toString());
