@@ -36,7 +36,7 @@ const videoObj = {
       type: String
     }
   },
-  videoID: {
+  videoId: {
     type: String,
     required: true
   },
@@ -47,9 +47,9 @@ const videoObj = {
   }
 };
 
-const VideoSchema = new mongoose.Schema(videoObj);
+const videoSchema = new mongoose.Schema(videoObj);
 
-const Video = mongoose.model("Video", VideoSchema); // create a model with that schema to "Video" collection
+const Video = mongoose.model("Video", videoSchema); // create a model with that schema to "Video" collection
 
 exports.videoObj = videoObj;
 exports.Video = Video;

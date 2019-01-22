@@ -44,6 +44,14 @@ router.post("/", async (req, res) => {
     .send(_.pick(newUser, ["_id", "username", "email", "isAdmin"]));
 });
 
+router.get("/getVideos", auth, async (req, res) => {
+  const foundUser = await User.findById(req.user._id).populate(
+    "videos",
+    "-_owner"
+  );
+  res.send(foundUser.videos);
+});
+
 function validateRegister(user) {
   const schema = {
     username: joi
