@@ -87,20 +87,10 @@ function checkLink(url) {
 
 function validateVideo(video) {
   const schema = {
-    title: joi
-      .string()
-      .max(videoObj.title.maxlength)
-      .required(),
-    description: joi.string().required(),
-    artist: joi
-      .string()
-      .max(videoObj.artist.maxlength)
-      .required(),
-    albumArtLink: joi.string().required(),
-    alternateAlbumArtLink: joi.object(),
-    videoId: joi.string().required(),
-    length: joi.number().required(),
-    size: joi.number().required()
+    link: joi.string().required(),
+    title: joi.string().max(videoObj.title.maxlength),
+    artist: joi.string().max(videoObj.artist.maxlength),
+    alternateAlbumArtLink: joi.string()
   };
 
   return joi.validate(video, schema, { abortEarly: false });
