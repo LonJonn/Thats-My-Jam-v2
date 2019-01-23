@@ -23,7 +23,13 @@ Vue.use(VueProgressBar, {
 
 const main = async function() {
   const JWToken = localStorage.getItem("JWToken");
-  if (JWToken) await store.dispatch("logIn", JWToken);
+  if (JWToken)
+    try {
+      await store.dispatch("logIn", JWToken);
+    } catch (err) {
+      localStorage.removeItem("JWToken");
+    }
+
   new Vue({
     router,
     store,
