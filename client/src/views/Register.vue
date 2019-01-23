@@ -1,22 +1,22 @@
 <template>
   <div>
-    <p class="subtitle">Users</p>
-    user: {{ this.$store.state.user }} <br />
-    <input v-model="username" type="text" /> <br />
-    <input v-model="password" type="text" /> <br />
-    <div v-if="!$store.getters.isAuthed">
-      <button @click="logInUser">Log in</button>
-    </div>
-    <div v-else><button @click="logOutUser">Log Out</button></div>
-    <br />
-    <br />
-    <input @input="debouncedGetAvailable" v-model="regUser" type="text" />
-    <br />
-    <input v-model="regEmail" type="text" /> <br />
-    <input v-model="regPass" type="text" /> <br />
-    <input v-model="regIsAdmin" type="checkbox" /> <br />
-    <button @click="registerUser">register</button> <br />
-    Available? {{ usernameAvailble }}
+    <section class="section">
+      <div class="container">
+        <p class="subtitle">Register</p>
+        <input
+          placeholder="username"
+          @input="debouncedGetAvailable"
+          v-model="regUser"
+          type="text"
+        />
+        <br />
+        <input placeholder="email" v-model="regEmail" type="text" /> <br />
+        <input placeholder="password" v-model="regPass" type="text" /> <br />
+        <input v-model="regIsAdmin" type="checkbox" /> <br />
+        <button @click="registerUser">register</button> <br />
+        Available? {{ usernameAvailble }}
+      </div>
+    </section>
   </div>
 </template>
 
@@ -25,7 +25,7 @@ import AuthService from "../services/AuthService";
 import _ from "lodash";
 
 export default {
-  name: "Users",
+  name: "register",
   data() {
     return {
       username: "",
@@ -36,9 +36,6 @@ export default {
       regIsAdmin: false,
       usernameAvailble: null
     };
-  },
-  created: function() {
-    this.debouncedGetAvailable = _.debounce(this.getAvailable, 500);
   },
   methods: {
     logInUser: async function() {
@@ -79,6 +76,13 @@ export default {
       const response = await AuthService.usernameAvailable(this.regUser);
       this.usernameAvailble = response.data;
     }
+  },
+  created() {
+    this.$Progress.start();
+    this.debouncedGetAvailable = _.debounce(this.getAvailable, 500);
+  },
+  mounted() {
+    this.$Progress.finish();
   }
 };
 </script>

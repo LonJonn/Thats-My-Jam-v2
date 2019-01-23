@@ -3,8 +3,7 @@
     <div class="container">
       <h1 class="title">Playground</h1>
       <h2 class="subtitle">Sugoi Woi Woi</h2>
-      <router-link to="/">Playground</router-link> |
-      <router-link to="/login">Login</router-link>
+      <Navbar />
     </div>
     <router-view />
     <vue-progress-bar></vue-progress-bar>
@@ -12,8 +11,13 @@
 </template>
 
 <script>
+import Navbar from "./components/layouts/Navbar.vue";
+
 export default {
   name: "app",
+  components: {
+    Navbar
+  },
   sockets: {
     connect: function() {
       console.log("socket connected");
