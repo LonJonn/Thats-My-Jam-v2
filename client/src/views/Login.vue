@@ -3,13 +3,7 @@
     <section class="section">
       <div class="container">
         <Auth />
-        <b-notification
-          type="is-danger"
-          v-for="error in errors"
-          v-bind:key="error"
-        >
-          {{ error }}
-        </b-notification>
+        <Errors v-bind:errors="errors" />
         <p class="subtitle">Login</p>
         <input placeholder="username" v-model="username" type="text" /> <br />
         <input placeholder="password" v-model="password" type="text" /> <br />
@@ -24,12 +18,14 @@
 
 <script>
 import Auth from "../components/layouts/Auth.vue";
+import Errors from "../components/layouts/Errors.vue";
 import AuthService from "../services/AuthService";
 
 export default {
   name: "login",
   components: {
-    Auth
+    Auth,
+    Errors
   },
   data() {
     return {

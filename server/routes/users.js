@@ -26,10 +26,10 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(_.map(error.details, "message"));
 
   let foundUser = await User.findOne({ email: req.body.email });
-  if (foundUser) return res.status(400).send("User already registered.");
+  if (foundUser) return res.status(400).send(["User already registered."]);
 
   foundUser = await User.findOne({ username: req.body.username });
-  if (foundUser) return res.status(400).send("Username already taken.");
+  if (foundUser) return res.status(400).send(["Username already taken."]);
 
   let newUser = new User(_.pick(req.body, Object.keys(userObj)));
   const salt = await bcrypt.genSalt(10);

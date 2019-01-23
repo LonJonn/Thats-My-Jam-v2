@@ -2,17 +2,19 @@
   <div>
     <section class="section">
       <div class="container">
+        <Auth />
+        <Errors v-bind:errors="errors" />
         <p class="subtitle">Register</p>
         <input
           placeholder="username"
           @input="debouncedGetAvailable"
-          v-model="regUser"
+          v-model="username"
           type="text"
         />
         <br />
-        <input placeholder="email" v-model="regEmail" type="text" /> <br />
-        <input placeholder="password" v-model="regPass" type="text" /> <br />
-        <input v-model="regIsAdmin" type="checkbox" /> <br />
+        <input placeholder="email" v-model="email" type="text" /> <br />
+        <input placeholder="password" v-model="password" type="text" /> <br />
+        <input v-model="isAdmin" type="checkbox" /> <br />
         <button @click="registerUser">register</button> <br />
         Available? {{ usernameAvailble }}
       </div>
@@ -21,59 +23,45 @@
 </template>
 
 <script>
+import Errors from "../components/layouts/Errors.vue";
 import AuthService from "../services/AuthService";
 import _ from "lodash";
 
 export default {
   name: "register",
+  components: {
+    Errors
+  },
   data() {
     return {
       username: "",
+      email: "",
       password: "",
-      regUser: "",
-      regEmail: "",
-      regPass: "",
-      regIsAdmin: false,
-      usernameAvailble: null
+      isAdmin: false,
+      usernameAvailble: null,
+      errors: []
     };
   },
   methods: {
-    logInUser: async function() {
-      try {
-        const response = await AuthService.logInUser({
-          username: this.username,
-          password: this.password
-        });
-        await this.$store.dispatch("logIn", response.data);
-
-        const redirect = this.$route.params.redirect;
-        if (redirect) this.$router.push(redirect.path);
-      } catch (error) {
-        console.error(error.response.data);
-      }
-    },
-    logOutUser: function() {
-      this.$store.dispatch("logOut");
-    },
     registerUser: async function() {
       try {
-        const response = await AuthService.registerUser({
-          username: this.regUser,
-          email: this.regEmail,
-          password: this.regPass,
-          isAdmin: this.regIsAdmin
+        await AuthService.registerUser({
+          username: this.username,
+          email: this.email,
+          password: this.password,
+          isAdmin: this.isAdmin
         });
-        console.log(response);
+        this.errors = [];
       } catch (error) {
-        console.error(error.response.data);
+        this.errors = error.response.data;
       }
     },
     getAvailable: async function() {
       this.usernameAvailble = "getting...";
-      if (this.regUser.length <= 2) {
+      if (this.username.length <= 2) {
         return (this.usernameAvailble = null);
       }
-      const response = await AuthService.usernameAvailable(this.regUser);
+      const response = await AuthService.usernameAvailable(this.username);
       this.usernameAvailble = response.data;
     }
   },
