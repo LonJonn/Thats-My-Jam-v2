@@ -2,7 +2,14 @@
   <div>
     <section class="section">
       <div class="container">
-        <div v-if="$route.params.requiresAuth">You need to log in</div>
+        <Auth />
+        <b-notification
+          type="is-danger"
+          v-for="error in errors"
+          v-bind:key="error"
+        >
+          {{ error }}
+        </b-notification>
         <p class="subtitle">Login</p>
         <input placeholder="username" v-model="username" type="text" /> <br />
         <input placeholder="password" v-model="password" type="text" /> <br />
@@ -16,14 +23,19 @@
 </template>
 
 <script>
+import Auth from "../components/layouts/Auth.vue";
 import AuthService from "../services/AuthService";
 
 export default {
   name: "login",
+  components: {
+    Auth
+  },
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      errors: []
     };
   },
   created() {
@@ -34,18 +46,22 @@ export default {
   },
   methods: {
     logInUser: async function() {
+      let response;
+
       try {
-        const response = await AuthService.logInUser({
+        response = await AuthService.logInUser({
           username: this.username,
           password: this.password
         });
-        await this.$store.dispatch("logIn", response.data);
-
-        const redirect = this.$route.params.redirect;
-        if (redirect) this.$router.push(redirect.path);
       } catch (error) {
-        console.error(error.response.data);
+        return (this.errors = error.response.data);
       }
+
+      await this.$store.dispatch("logIn", response.data);
+      this.errors = [];
+
+      const redirect = this.$route.params.redirect;
+      if (redirect) this.$router.push(redirect.path);
     },
     logOutUser: function() {
       this.$store.dispatch("logOut");
