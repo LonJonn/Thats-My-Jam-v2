@@ -6,6 +6,6 @@
 
 <script>
 export default {
-  name: "files"
+  name: "auth"
 };
 </script>
