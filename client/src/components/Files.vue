@@ -17,7 +17,7 @@ import FilesService from "../services/FilesService";
 import swal from "sweetalert2";
 
 export default {
-  name: "Files",
+  name: "files",
   data() {
     return {
       loadingFiles: true,

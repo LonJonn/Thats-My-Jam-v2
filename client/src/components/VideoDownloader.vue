@@ -30,7 +30,7 @@ import swal from "sweetalert2";
 import DownloadService from "../services/DownloadService";
 
 export default {
-  name: "VideoDownloader",
+  name: "videoDownloader",
   data() {
     return {
       link: "",
