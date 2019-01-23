@@ -38,16 +38,7 @@ router.post("/", auth, async (req, res) => {
   req.body._owner = req.user._id;
 
   const newVideo = await new Video(
-    _.pick(req.body, [
-      "_owner",
-      "title",
-      "description",
-      "artist",
-      "albumArtLink",
-      "alternateAlbumArtLink",
-      "videoId",
-      "length"
-    ])
+    _.pick(req.body, Object.keys(videoObj))
   ).save();
 
   const foundUser = await User.findById(req.body._owner);
@@ -108,7 +99,8 @@ function validateVideo(video) {
     albumArtLink: joi.string().required(),
     alternateAlbumArtLink: joi.object(),
     videoId: joi.string().required(),
-    length: joi.number().required()
+    length: joi.number().required(),
+    size: joi.number().required()
   };
 
   return joi.validate(video, schema, { abortEarly: false });

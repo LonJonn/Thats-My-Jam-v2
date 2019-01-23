@@ -44,6 +44,11 @@ const videoObj = {
     // in seconds
     type: Number,
     required: true
+  },
+  size: {
+    // in mb
+    type: Number,
+    required: true
   }
 };
 

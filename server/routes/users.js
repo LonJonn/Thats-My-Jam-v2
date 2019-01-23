@@ -31,9 +31,7 @@ router.post("/", async (req, res) => {
   foundUser = await User.findOne({ username: req.body.username });
   if (foundUser) return res.status(400).send("Username already taken.");
 
-  let newUser = new User(
-    _.pick(req.body, ["username", "email", "password", "isAdmin"])
-  );
+  let newUser = new User(_.pick(req.body, Object.keys(userObj)));
   const salt = await bcrypt.genSalt(10);
   newUser.password = await bcrypt.hash(newUser.password, salt);
   await newUser.save();
