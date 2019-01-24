@@ -11,7 +11,7 @@ const videoObj = {
   title: {
     type: String,
     required: true,
-    maxlength: 30
+    maxlength: 60
   },
   description: {
     type: String,
@@ -20,21 +20,15 @@ const videoObj = {
   artist: {
     type: String,
     required: true,
-    maxlength: 30
+    maxlength: 60
     // default to channel name
   },
-  albumArtLink: {
+  albumArt: {
     type: String,
     required: true
   },
-  alternateAlbumArtLink: {
-    use: {
-      type: Boolean,
-      default: false
-    },
-    link: {
-      type: String
-    }
+  alternateAlbumArt: {
+    type: String
   },
   videoId: {
     type: String,

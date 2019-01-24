@@ -1,46 +1,37 @@
 const fs = require("fs");
 const path = require("path");
-const sanitise = require("sanitize-filename");
-const http = require("http");
-const ytdl = require("youtube-dl");
+const request = require("request");
 
-async function downloadVideo(url, client) {
+async function downloadVideo(metadata, client) {
   const saveDir = path.join(__dirname, "../static/files/");
+  let { title, size, _id, albumArt, alternateAlbumArt, href } = metadata;
+  if (alternateAlbumArt) albumArt = alternateAlbumArt;
 
-  const video = ytdl(url);
-  video.on("info", info => {
-    const cleanTitle = sanitise(info.title);
-    const sizeMb = Math.round((info.size / 1e6) * 1e1) / 1e1;
-    console.log("\x1b[35m%s\x1b[0m", "[Download Started]\n" + cleanTitle);
-    console.log("Size:", sizeMb, "mb");
+  console.log("\x1b[35m%s\x1b[0m", "[Download Started]\n" + title);
+  console.log("Size:", size, "mb");
 
-    const videoDir = saveDir + cleanTitle + ".mp4";
-    const thumbDir = saveDir + cleanTitle + ".jpg";
+  const videoDir = saveDir + _id + ".mp4";
+  const thumbDir = saveDir + _id + ".jpg";
 
-    const thumbLink = info.thumbnail.replace("https", "http");
-    http.get(thumbLink, res => {
-      res.pipe(fs.createWriteStream(thumbDir));
+  request(albumArt).pipe(fs.createWriteStream(thumbDir));
+  const video = request(href).pipe(fs.createWriteStream(videoDir));
+
+  const downloadInfo = setInterval(() => {
+    let currentVideoSize = fs.statSync(videoDir).size;
+    let downloaded = Math.round((currentVideoSize / 1e6) * 1e1) / 1e1;
+
+    client.emit("downloadInfo", {
+      filename: title,
+      size: size,
+      downloaded: downloaded,
+      percentage: Math.round((downloaded / size) * 100)
     });
+  }, 500);
 
-    video.pipe(fs.createWriteStream(videoDir));
-
-    const downloadInfo = setInterval(() => {
-      let currentVideoSize = fs.statSync(videoDir).size;
-      let downloadedMB = Math.round((currentVideoSize / 1e6) * 1e1) / 1e1;
-
-      client.emit("downloadInfo", {
-        filename: cleanTitle,
-        size: sizeMb,
-        downloaded: downloadedMB,
-        percentage: Math.round((downloadedMB / sizeMb) * 100)
-      });
-    }, 500);
-
-    video.on("end", () => {
-      clearInterval(downloadInfo);
-      client.emit("downloadFinished");
-      console.log("\x1b[36m%s\x1b[0m", "[Download Finished]");
-    });
+  video.on("close", () => {
+    clearInterval(downloadInfo);
+    client.emit("downloadFinished");
+    console.log("\x1b[36m%s\x1b[0m", "[Download Finished]");
   });
 }
 

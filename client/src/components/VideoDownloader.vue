@@ -1,14 +1,10 @@
 <template>
   <div>
     <p class="subtitle">Video Downloader</p>
-    <input
-      type="text"
-      name="link"
-      id="link"
-      placeholder="Enter your link here!"
-      v-model="link"
-    />
-    <br />
+    <input placeholder="Enter your link here!" v-model="link" /><br />
+    <input placeholder="Title!" v-model="title" /><br />
+    <input placeholder="Artist!" v-model="artist" /><br />
+    <input placeholder="Album Art!" v-model="alternateAlbumArt" /><br /><br />
     <a @click="downloadVideo" class="button">Download</a>
     <div v-show="searching"><br />Getting Info...</div>
     <div id="downloadInfo">
@@ -34,6 +30,9 @@ export default {
   data() {
     return {
       link: "",
+      title: "",
+      artist: "",
+      alternateAlbumArt: "",
       searching: false,
       downloadInfo: null
     };
@@ -55,28 +54,46 @@ export default {
       this.downloadInfo = info;
     }
   },
+
   methods: {
     downloadVideo: async function() {
       this.searching = true;
-      const linkFound = (await DownloadService.checkLink(this.link)).data;
-      this.searching = false;
-      if (linkFound) {
+      try {
+        const filtered = this.pick(this, [
+          "link",
+          "title",
+          "artist",
+          "alternateAlbumArt"
+        ]);
+        const response = await DownloadService.downloadVideo(filtered);
+
         swal({
           title: "Download Starting...",
           type: "success",
           toast: true,
+          timer: 4000,
           position: "top-end",
           showConfirmButton: false
         });
-        this.$socket.emit("startVideoDownload", this.link);
-      } else {
+
+        this.$socket.emit("startVideoDownload", response.data);
+      } catch (error) {
         swal({
           title: "Bwahhh!",
           html: "<b>Invalid Link!</b><br>Video not found...",
           type: "error"
         });
       }
+      this.searching = false;
       this.link = "";
+    },
+
+    pick: function(object, array) {
+      let filtered = {};
+      array.forEach(item => {
+        if (object[item]) filtered[item] = object[item];
+      });
+      return filtered;
     }
   }
 };

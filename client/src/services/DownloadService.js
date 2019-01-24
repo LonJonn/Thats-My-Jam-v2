@@ -17,7 +17,7 @@ export default {
     });
   },
 
-  checkLink(link) {
-    return Api().post("videos/check", { link: link });
+  downloadVideo(params) {
+    return Api().post("videos", params);
   }
 };

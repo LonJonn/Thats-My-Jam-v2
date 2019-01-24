@@ -43,8 +43,8 @@ io.on("connection", function(client) {
     console.log("User disconnected:", client.id);
   });
 
-  client.on("startVideoDownload", function(link) {
-    downloadVideo(link, client);
+  client.on("startVideoDownload", function(metadata) {
+    downloadVideo(metadata, client);
   });
 });
 // ------------------End Socket------------------

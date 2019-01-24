@@ -21,6 +21,7 @@
     "morgan": "^1.9.1",
     "node-fetch": "^2.3.0",
     "node-pre-gyp": "^0.10.0",
+    "request": "^2.88.0",
     "sanitize-filename": "^1.6.1",
     "socket.io": "^2.2.0",
     "youtube-dl": "^1.12.2"
