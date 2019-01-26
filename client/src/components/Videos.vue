@@ -8,7 +8,7 @@
       <img :src="video.albumArt" width="80" /> <br />
       Artist: {{ video.artist }} <br />
       Size: {{ video.size }} Mb <br />
-      length: {{ video.length }} seconds <br />
+      length: {{ video.lengthString }} <br />
       <br />
       <a :href="'http://www.youtube.com/watch?v=' + video.videoId">Youtube</a> -
       <a :href="rootUrl + video._id + '.mp4'">open video</a> -
