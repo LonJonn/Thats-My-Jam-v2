@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
 router.delete("/:file", (req, res) => {
   try {
     fs.unlinkSync(path.join(__dirname, "../static/files/" + req.params.file));
-    res.end();
+    res.send("File deleted.");
   } catch (error) {
     res.status(404).send("File not found!\nNo file deleted.");
   }
