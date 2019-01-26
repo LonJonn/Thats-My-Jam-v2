@@ -1,4 +1,4 @@
-const config = require("config");
+const config = require("./config.json");
 const mongoose = require("mongoose");
 const socket = require("socket.io");
 const downloadVideo = require("./functions/downloadVideo");
@@ -10,7 +10,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-if (!config.get("jwtPrivateKey")) {
+if (!config.jwtPrivateKey) {
   console.error("FATAL ERROR: jwtPriavteKey is not defined.");
   process.exit(1);
 }
