@@ -1,7 +1,7 @@
 import Api from "../services/Api";
 
 export default {
-  async logInUser(userObj) {
+  logInUser(userObj) {
     return Api().post("auth", userObj);
   },
 
