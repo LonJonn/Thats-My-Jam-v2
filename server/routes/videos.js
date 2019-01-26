@@ -19,18 +19,31 @@ router.get("/", auth, admin, async (req, res) => {
   res.send(videos);
 });
 
-router.get("/:videoId", async (req, res) => {
-  const foundVideo = await Video.findById(req.params.videoId).populate(
-    "_owner",
-    ["-videos", "-password"]
-  );
+router.get("/:videoId", auth, async (req, res) => {
+  let foundVideo;
+
+  try {
+    foundVideo = await Video.findById(req.params.videoId).populate("_owner", [
+      "-videos",
+      "-password"
+    ]);
+  } catch (error) {
+    return res.status(400).send("Invalid video id.");
+  }
 
   if (!foundVideo) return res.status(404).send("Video does not exist.");
+
+  const owner = await checkOwner(req);
+  if (!owner)
+    return res
+      .status(401)
+      .send("Access denied. You don't have permission to view this data.");
+
   res.send(foundVideo);
 });
 
 router.post("/", auth, async (req, res) => {
-  const { error } = validateVideo(req.body);
+  const { error } = validateVideoPost(req.body);
   if (error) return res.status(400).send(_.map(error.details, "message"));
 
   const video = ytdl(req.body.link);
@@ -59,50 +72,65 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.delete("/:videoId", auth, async (req, res) => {
+  const videoId = req.params.videoId;
   let foundVideo;
 
   try {
-    foundVideo = await Video.findById(req.params.videoId);
+    foundVideo = await Video.findById(videoId);
   } catch (error) {
-    return res.status(401).send("Unable to delete. Invalid video Id.");
+    return res.status(400).send("Unable to delete. Invalid video id.");
   }
 
   if (!foundVideo)
     return res.status(404).send("Unable to delete. Video does not exist");
 
-  const foundUser = await User.findById(req.user._id);
-  const parsedVideos = foundUser.videos.map(id => id.toString());
-
-  if (!parsedVideos.includes(req.params.videoId))
+  const owner = await checkOwner(req);
+  if (!owner)
     return res
       .status(401)
       .send("Access denied. You don't have permission to delete this video.");
 
   try {
-    await deleteVideo(req.params.videoId);
+    fs.unlinkSync(path.join(__dirname, "../static/files/", videoId + ".mp4"));
+    fs.unlinkSync(path.join(__dirname, "../static/files/", videoId + ".jpg"));
   } catch (error) {
     return res.status(400).send("Unable to delete video. File doesn't exist.");
   }
 
   foundVideo.remove();
 
-  foundUser.videos = foundUser.videos.filter(Id => Id != req.params.videoId);
-  foundUser.save();
+  owner.videos = owner.videos.filter(Id => Id != req.params.videoId);
+  owner.save();
 
-  res.end();
+  res.send("Video deleted.");
 });
 
-function deleteVideo(videoId) {
-  return new Promise((resolve, reject) => {
-    try {
-      fs.unlinkSync(path.join(__dirname, "../static/files/", videoId + ".mp4"));
-      fs.unlinkSync(path.join(__dirname, "../static/files/", videoId + ".jpg"));
-      resolve();
-    } catch (error) {
-      reject();
-    }
-  });
-}
+router.put("/:videoId", auth, async (req, res) => {
+  let foundVideo;
+
+  const { error } = validateVideoPut(req.body);
+  if (error) return res.status(400).send(_.map(error.details, "message"));
+
+  try {
+    foundVideo = await Video.findById(req.params.videoId);
+  } catch (error) {
+    return res.status(400).send("Unable to edit. Invalid video id.");
+  }
+
+  if (!foundVideo)
+    return res.status(404).send("Unable to edit. Video does not exist");
+
+  const owner = await checkOwner(req);
+  if (!owner)
+    return res
+      .status(401)
+      .send("Access denied. You don't have permission to edit this video.");
+
+  foundVideo.set(req.body);
+  foundVideo.save();
+
+  res.send(foundVideo);
+});
 
 function setRequestData(data, info) {
   if (!data.title) data.title = sanitise(info.title);
@@ -118,7 +146,17 @@ function setRequestData(data, info) {
   return data;
 }
 
-function validateVideo(video) {
+async function checkOwner(req) {
+  const foundUser = await User.findById(req.user._id);
+  const parsedVideos = foundUser.videos.map(id => id.toString());
+
+  if (!parsedVideos.includes(req.params.videoId) || !req.user.isAdmin)
+    return null;
+
+  return foundUser;
+}
+
+function validateVideoPost(videoParams) {
   const schema = {
     link: joi.string().required(),
     title: joi.string().max(videoObj.title.maxlength),
@@ -126,7 +164,16 @@ function validateVideo(video) {
     alternateAlbumArt: joi.string()
   };
 
-  return joi.validate(video, schema, { abortEarly: false });
+  return joi.validate(videoParams, schema, { abortEarly: false });
+}
+
+function validateVideoPut(videoParams) {
+  const schema = {
+    title: joi.string().max(videoObj.title.maxlength),
+    artist: joi.string().max(videoObj.artist.maxlength)
+  };
+
+  return joi.validate(videoParams, schema, { abortEarly: false });
 }
 
 module.exports = router;
