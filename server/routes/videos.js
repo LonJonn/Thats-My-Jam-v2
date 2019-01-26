@@ -153,10 +153,10 @@ async function checkOwner(req) {
   const foundUser = await User.findById(req.user._id);
   const parsedVideos = foundUser.videos.map(id => id.toString());
 
-  if (!parsedVideos.includes(req.params.videoId) || !req.user.isAdmin)
-    return null;
+  if (parsedVideos.includes(req.params.videoId) || req.user.isAdmin)
+    return foundUser;
 
-  return foundUser;
+  return null;
 }
 
 function validateVideoPost(videoParams) {

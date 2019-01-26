@@ -2,7 +2,6 @@
   <div>
     <section class="section">
       <div class="container">
-        <Auth />
         <Errors v-bind:errors="errors" />
         <p class="subtitle">Register</p>
         <input

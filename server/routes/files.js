@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const path = require("path");
+const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router.get("/", async (req, res) => {
   res.send(files.filter(file => !file.startsWith(".")));
 });
 
-router.delete("/:file", async (req, res) => {
+router.delete("/:file", auth, async (req, res) => {
   try {
     await fs.unlink(path.join(__dirname, "../static/files/" + req.params.file));
   } catch (error) {

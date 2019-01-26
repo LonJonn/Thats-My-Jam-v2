@@ -2,23 +2,23 @@
   <div>
     <section class="section">
       <div class="container">
-        <Files />
-        <br />
         <VideoDownloader />
+        <br />
+        <Videos />
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import Files from "@/components/Files.vue";
 import VideoDownloader from "@/components/VideoDownloader.vue";
+import Videos from "@/components/Videos.vue";
 
 export default {
   name: "playground",
   components: {
-    Files,
-    VideoDownloader
+    VideoDownloader,
+    Videos
   },
   created() {
     this.$Progress.start();
