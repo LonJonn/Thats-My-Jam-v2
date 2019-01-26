@@ -23,7 +23,7 @@
 
 <script>
 import swal from "sweetalert2";
-import DownloadService from "../services/DownloadService";
+import VideosService from "../services/VideosService";
 
 export default {
   name: "videoDownloader",
@@ -65,7 +65,7 @@ export default {
           "artist",
           "alternateAlbumArt"
         ]);
-        const response = await DownloadService.downloadVideo(filtered);
+        const response = await VideosService.downloadVideo(filtered);
 
         swal({
           title: "Download Starting...",

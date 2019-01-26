@@ -4,15 +4,13 @@
     <div v-if="loadingFiles">loading...</div>
     <div v-else-if="!filesList">No Downloads...</div>
     <div v-else v-for="(file, index) in filesList" :key="index">
-      {{ file }} - <a :href="'http://localhost:8081/files/' + file">open</a> |
-      <a @click="downloadFile(file)">download</a> -
+      {{ file }} - <a :href="'http://localhost:8081/files/' + file">open</a> -
       <a style="color:#f44336" @click="deleteFile(file)">delete</a>
     </div>
   </div>
 </template>
 
 <script>
-import DownloadService from "../services/DownloadService";
 import FilesService from "../services/FilesService";
 import swal from "sweetalert2";
 
@@ -37,12 +35,6 @@ export default {
       const response = await FilesService.fetchFiles();
       this.filesList = response.data;
       this.loadingFiles = false;
-    },
-
-    downloadFile: function(file, name) {
-      let nameFixed;
-      if (name) nameFixed = name + "." + file.split(".")[1];
-      DownloadService.save("http://localhost:8081/files/", file, nameFixed);
     },
 
     deleteFile: function(file) {

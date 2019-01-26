@@ -8,9 +8,9 @@ router.get("/", async (req, res) => {
   res.send(files.filter(file => !file.startsWith(".")));
 });
 
-router.delete("/:file", (req, res) => {
+router.delete("/:file", async (req, res) => {
   try {
-    fs.unlinkSync(path.join(__dirname, "../static/files/" + req.params.file));
+    await fs.unlink(path.join(__dirname, "../static/files/" + req.params.file));
   } catch (error) {
     res.status(404).send("File not found!\nNo file deleted.");
   }
