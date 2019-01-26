@@ -162,8 +162,8 @@ async function checkOwner(req) {
 function validateVideoPost(videoParams) {
   const schema = {
     link: joi.string().required(),
-    title: joi.string().max(videoObj.title.maxlength),
-    artist: joi.string().max(videoObj.artist.maxlength),
+    title: joi.string(),
+    artist: joi.string(),
     alternateAlbumArt: joi.string()
   };
 
@@ -172,8 +172,8 @@ function validateVideoPost(videoParams) {
 
 function validateVideoPut(videoParams) {
   const schema = {
-    title: joi.string().max(videoObj.title.maxlength),
-    artist: joi.string().max(videoObj.artist.maxlength)
+    title: joi.string(),
+    artist: joi.string()
   };
 
   return joi.validate(videoParams, schema, { abortEarly: false });

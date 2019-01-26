@@ -10,8 +10,7 @@ const videoObj = {
   },
   title: {
     type: String,
-    required: true,
-    maxlength: 60
+    required: true
   },
   description: {
     type: String,
@@ -19,8 +18,7 @@ const videoObj = {
   },
   artist: {
     type: String,
-    required: true,
-    maxlength: 60
+    required: true
     // default to channel name
   },
   albumArt: {
