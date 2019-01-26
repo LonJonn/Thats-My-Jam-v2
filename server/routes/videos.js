@@ -1,6 +1,6 @@
 const ytdl = require("youtube-dl");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs").promises;
 const _ = require("lodash");
 const sanitise = require("sanitize-filename");
 const joi = require("joi");
@@ -55,7 +55,6 @@ router.post("/", auth, async (req, res) => {
   video.on("info", async info => {
     const metadata = setRequestData(req.body, info);
     metadata._owner = req.user._id;
-    metadata.href = info.url;
 
     const newVideo = await new Video(
       _.pick(metadata, Object.keys(videoObj))
@@ -91,8 +90,10 @@ router.delete("/:videoId", auth, async (req, res) => {
       .send("Access denied. You don't have permission to delete this video.");
 
   try {
-    fs.unlinkSync(path.join(__dirname, "../static/files/", videoId + ".mp4"));
-    fs.unlinkSync(path.join(__dirname, "../static/files/", videoId + ".jpg"));
+    await Promise.all([
+      fs.unlink(path.join(__dirname, "../static/files/", videoId + ".mp4")),
+      fs.unlink(path.join(__dirname, "../static/files/", videoId + ".jpg"))
+    ]);
   } catch (error) {
     return res.status(400).send("Unable to delete video. File doesn't exist.");
   }
@@ -142,6 +143,8 @@ function setRequestData(data, info) {
   const splitTime = info.duration.split(":");
   data.length = Number(splitTime[0]) * 60 + Number(splitTime[1]);
   data.size = Math.round((info.size / 1e6) * 1e1) / 1e1;
+
+  data.href = info.url;
 
   return data;
 }

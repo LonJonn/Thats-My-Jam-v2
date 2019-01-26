@@ -1,4 +1,5 @@
-const fs = require("fs");
+const fs = require("fs").promises;
+const fsSync = require("fs");
 const path = require("path");
 const request = require("request");
 
@@ -13,11 +14,11 @@ async function downloadVideo(metadata, client) {
   const videoDir = saveDir + _id + ".mp4";
   const thumbDir = saveDir + _id + ".jpg";
 
-  request(albumArt).pipe(fs.createWriteStream(thumbDir));
-  const video = request(href).pipe(fs.createWriteStream(videoDir));
+  request(albumArt).pipe(fsSync.createWriteStream(thumbDir));
+  const video = request(href).pipe(fsSync.createWriteStream(videoDir));
 
-  const downloadInfo = setInterval(() => {
-    let currentVideoSize = fs.statSync(videoDir).size;
+  const downloadInfo = setInterval(async () => {
+    let currentVideoSize = (await fs.stat(videoDir)).size;
     let downloaded = Math.round((currentVideoSize / 1e6) * 1e1) / 1e1;
 
     client.emit("downloadInfo", {

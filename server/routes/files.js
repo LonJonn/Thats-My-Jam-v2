@@ -1,12 +1,11 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const express = require("express");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  fs.readdir(path.join(__dirname, "../static/files"), (err, files) => {
-    res.send(files.filter(file => !file.startsWith(".")));
-  });
+  const files = await fs.readdir(path.join(__dirname, "../static/files"));
+  res.send(files.filter(file => !file.startsWith(".")));
 });
 
 router.delete("/:file", (req, res) => {
