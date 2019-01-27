@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "errors",
+  name: "Errors",
   props: {
     errors: Array
   }

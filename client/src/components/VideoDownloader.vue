@@ -26,7 +26,7 @@ import swal from "sweetalert2";
 import VideosService from "../services/VideosService";
 
 export default {
-  name: "videoDownloader",
+  name: "VideoDownloader",
   data() {
     return {
       link: "",
@@ -86,6 +86,9 @@ export default {
       }
       this.searching = false;
       this.link = "";
+      this.title = "";
+      this.artist = "";
+      this.alternateAlbumArt = "";
     },
 
     pick: function(object, array) {
