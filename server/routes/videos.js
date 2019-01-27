@@ -3,8 +3,6 @@ const path = require("path");
 const fs = require("fs").promises;
 const _ = require("lodash");
 const sanitise = require("sanitize-filename");
-const moment = require("moment");
-const momentDurFor = require("moment-duration-format");
 const joi = require("joi");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
@@ -12,7 +10,6 @@ const { videoObj, Video } = require("../models/videoModel");
 const { User } = require("../models/userModel");
 const express = require("express");
 const router = express.Router();
-momentDurFor(moment);
 
 router.get("/", auth, admin, async (req, res) => {
   const videos = await Video.find().populate("_owner", [
@@ -144,9 +141,6 @@ function setRequestData(data, info) {
   data.albumArt = info.thumbnail;
   data.videoId = info.display_id;
   data.length = info._duration_raw;
-  data.lengthString = moment
-    .duration(info._duration_raw, "s")
-    .format("h [hour] m [min] s [second]", { trim: "both small" });
   data.size = Math.round((info.size / 1e6) * 1e1) / 1e1;
 
   data.href = info.url;

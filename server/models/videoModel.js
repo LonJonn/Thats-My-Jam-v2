@@ -37,10 +37,6 @@ const videoObj = {
     type: Number,
     required: true
   },
-  lengthString: {
-    type: String,
-    required: true
-  },
   size: {
     // in mb
     type: Number,

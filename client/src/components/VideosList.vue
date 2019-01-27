@@ -3,31 +3,28 @@
     <p class="subtitle">Videos</p>
     <div v-if="loadingVideos">loading...</div>
     <div v-else-if="videosList.length === 0">No videos...</div>
-    <div v-else v-for="(video, index) in videosList" :key="index">
-      Title: {{ video.title }} <br />
-      <img :src="video.albumArt" width="80" /> <br />
-      Artist: {{ video.artist }} <br />
-      Size: {{ video.size }} Mb <br />
-      length: {{ video.lengthString }} <br />
-      <br />
-      <a :href="'http://www.youtube.com/watch?v=' + video.videoId">Youtube</a> -
-      <a :href="rootUrl + video._id + '.mp4'">open video</a> -
-      <a :href="rootUrl + video._id + '.jpg'">open img</a> -
-      <a style="color:#f44336" @click="deleteVideo(video._id)">delete</a>
-      <hr />
-    </div>
+    <VideoItem
+      v-else
+      v-for="(video, index) in videosList"
+      :key="index"
+      v-bind:videoObj="video"
+      v-on:delete="deleteVideo($event)"
+    />
   </div>
 </template>
 
 <script>
 import VideosService from "../services/VideosService";
+import VideoItem from "../components/VideoItem";
 import swal from "sweetalert2";
 
 export default {
-  name: "videos",
+  name: "VideosList",
+  components: {
+    VideoItem
+  },
   data() {
     return {
-      rootUrl: "http://localhost:8081/files/",
       loadingVideos: true,
       videosList: []
     };

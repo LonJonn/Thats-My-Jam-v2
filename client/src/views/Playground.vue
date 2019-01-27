@@ -4,7 +4,7 @@
       <div class="container">
         <VideoDownloader />
         <br />
-        <Videos />
+        <VideosList />
       </div>
     </section>
   </div>
@@ -12,13 +12,13 @@
 
 <script>
 import VideoDownloader from "@/components/VideoDownloader.vue";
-import Videos from "@/components/Videos.vue";
+import VideosList from "@/components/VideosList.vue";
 
 export default {
   name: "playground",
   components: {
     VideoDownloader,
-    Videos
+    VideosList
   },
   created() {
     this.$Progress.start();
