@@ -6,15 +6,17 @@
     Size: {{ videoObj.size }} Mb <br />
     length: {{ getRuntime(videoObj.length) }} <br />
     <br />
-    <a :href="'http://www.youtube.com/watch?v=' + videoObj.videoId">Youtube</a>
-    - <a :href="rootUrl + videoObj._id + '.mp4'">open video</a> -
+    <a :href="'http://youtube.com/watch?v=' + videoObj.videoId">Youtube</a> -
+    <a :href="rootUrl + videoObj._id + '.mp4'">open video</a> -
     <a :href="rootUrl + videoObj._id + '.jpg'">open img</a> -
     <a class="has-text-danger" @click="$emit('delete', videoObj._id)">delete</a>
+    | <a class="has-text-info" @click="redownload(videoObj)"> redownload </a>
     <hr />
   </div>
 </template>
 
 <script>
+import swal from "sweetalert2";
 import moment from "moment";
 import momentDurFor from "moment-duration-format";
 momentDurFor(moment);
@@ -37,6 +39,18 @@ export default {
       return moment
         .duration(length, "s")
         .format("h [hour] m [min] s [second]", { trim: "both small" });
+    },
+
+    redownload: function(metadata) {
+      swal({
+        title: "Download Starting...",
+        type: "success",
+        toast: true,
+        timer: 4000,
+        position: "top-end",
+        showConfirmButton: false
+      });
+      this.$socket.emit("startVideoDownload", metadata);
     }
   }
 };

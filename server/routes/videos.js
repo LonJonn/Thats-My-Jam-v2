@@ -142,7 +142,6 @@ function setRequestData(data, info) {
   data.videoId = info.display_id;
   data.length = info._duration_raw;
   data.size = Math.round((info.size / 1e6) * 1e1) / 1e1;
-
   data.href = info.url;
 
   return data;

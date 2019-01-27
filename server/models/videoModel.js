@@ -41,6 +41,10 @@ const videoObj = {
     // in mb
     type: Number,
     required: true
+  },
+  href: {
+    type: String,
+    required: true
   }
 };
 
