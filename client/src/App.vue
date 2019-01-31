@@ -29,11 +29,11 @@ export default {
 <style lang="scss">
 .swal2-confirm-custom > .swal2-actions {
   .swal2-confirm {
-    background-color: #ff5252;
+    background-color: #ff5252 !important;
   }
 
   .swal2-cancel {
-    background-color: #3085d6;
+    background-color: #3085d6 !important;
   }
 }
 
