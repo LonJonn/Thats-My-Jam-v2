@@ -23,5 +23,9 @@ export default {
 
   deleteVideo(videoId) {
     return Api().delete("videos/" + videoId);
+  },
+
+  deleteVideoForced(videoId) {
+    return Api().delete("videos/" + videoId, { params: { forced: true } });
   }
 };

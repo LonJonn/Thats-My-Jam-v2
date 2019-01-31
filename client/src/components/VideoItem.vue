@@ -42,28 +42,57 @@ export default {
         .format("h [hour] m [min] s [second]", { trim: "both small" });
     },
 
-    deleteVideo: function(videoId) {
-      swal({
+    deleteVideo: async function(videoId) {
+      let result = await swal({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
         type: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#e74c3c",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!"
-      }).then(async result => {
-        if (result.value) {
-          await VideosService.deleteVideo(videoId);
-          swal({
-            title: "File Deleted!",
-            type: "success",
-            toast: true,
-            position: "top-end",
-            timer: 4000,
-            showConfirmButton: false
-          });
-          this.$emit("refreshList");
-        }
+        confirmButtonText: "Yes, delete it!",
+        customClass: "swal2-confirm-custom"
+      });
+
+      if (!result.value) return;
+
+      let errMsg;
+      try {
+        await VideosService.deleteVideo(videoId);
+      } catch (error) {
+        errMsg = error.response.data.split("\n");
+      }
+
+      if (!errMsg) {
+        swal({
+          title: "Video Deleted!",
+          type: "success",
+          toast: true,
+          position: "top-end",
+          timer: 4000,
+          showConfirmButton: false
+        });
+        return this.$emit("refreshList");
+      }
+
+      if (errMsg[1] == "Files missing on server.") {
+        result = await swal({
+          title: "Files missing on server.",
+          text: "Do you want to remove the video anyways?",
+          type: "error",
+          showCancelButton: true,
+          confirmButtonText: "Do it!",
+          customClass: "swal2-confirm-custom"
+        });
+
+        if (!result.value) return;
+
+        await VideosService.deleteVideoForced(videoId);
+        return this.$emit("refreshList");
+      }
+
+      swal({
+        title: errMsg[0],
+        text: errMsg[1],
+        type: "error"
       });
     },
 

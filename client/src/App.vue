@@ -27,6 +27,16 @@ export default {
 </script>
 
 <style lang="scss">
+.swal2-confirm-custom > .swal2-actions {
+  .swal2-confirm {
+    background-color: #ff5252;
+  }
+
+  .swal2-cancel {
+    background-color: #3085d6;
+  }
+}
+
 @import "~bulma/sass/utilities/_all";
 
 //custom styling

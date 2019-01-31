@@ -73,21 +73,30 @@ router.post("/", auth, async (req, res) => {
 router.delete("/:videoId", auth, async (req, res) => {
   const videoId = req.params.videoId;
   let foundVideo;
+  let owner;
+
+  if (req.query.forced) {
+    foundVideo = await Video.findById(videoId);
+    owner = await checkOwner(req);
+    return res.end(removeVideoData(req, foundVideo, owner));
+  }
 
   try {
     foundVideo = await Video.findById(videoId);
   } catch (error) {
-    return res.status(400).send("Unable to delete. Invalid video id.");
+    return res.status(400).send("Unable to delete.\nInvalid video ID.");
   }
 
   if (!foundVideo)
-    return res.status(404).send("Unable to delete. Video does not exist");
+    return res
+      .status(404)
+      .send("Unable to delete.\nVideo does not exist on databsae");
 
-  const owner = await checkOwner(req);
+  owner = await checkOwner(req);
   if (!owner)
     return res
       .status(401)
-      .send("Access denied. You don't have permission to delete this video.");
+      .send("Access denied.\nYou don't have permission to delete this video.");
 
   try {
     await Promise.all([
@@ -95,13 +104,10 @@ router.delete("/:videoId", auth, async (req, res) => {
       fs.unlink(path.join(__dirname, "../static/files/", videoId + ".jpg"))
     ]);
   } catch (error) {
-    return res.status(400).send("Unable to delete video. File doesn't exist.");
+    return res.status(400).send("Unable to delete.\nFiles missing on server.");
   }
 
-  foundVideo.remove();
-
-  owner.videos = owner.videos.filter(Id => Id != req.params.videoId);
-  owner.save();
+  removeVideoData(req, foundVideo, owner);
 
   res.send("Video deleted.");
 });
@@ -155,6 +161,13 @@ async function checkOwner(req) {
     return foundUser;
 
   return null;
+}
+
+function removeVideoData(req, video, user) {
+  video.remove();
+
+  user.videos = user.videos.filter(Id => Id != req.params.videoId);
+  user.save();
 }
 
 function validateVideoPost(videoParams) {
