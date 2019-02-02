@@ -9,8 +9,7 @@
     <a :href="'http://youtube.com/watch?v=' + videoObj.videoId">Youtube</a> -
     <a :href="rootUrl + videoObj._id + '.mp4'">open video</a> -
     <a :href="rootUrl + videoObj._id + '.jpg'">open img</a> -
-    <a class="has-text-danger" @click="deleteVideo(videoObj._id)">delete</a> |
-    <a class="has-text-info" @click="redownload(videoObj)"> redownload </a>
+    <a class="has-text-danger" @click="deleteVideo(videoObj._id)">delete</a>
     <hr />
   </div>
 </template>
@@ -94,18 +93,6 @@ export default {
         text: errMsg[1],
         type: "error"
       });
-    },
-
-    redownload: function(metadata) {
-      swal({
-        title: "Download Starting...",
-        type: "success",
-        toast: true,
-        timer: 4000,
-        position: "top-end",
-        showConfirmButton: false
-      });
-      this.$socket.emit("startVideoDownload", metadata);
     }
   }
 };
