@@ -44,12 +44,18 @@ router.get("/:videoId", auth, async (req, res) => {
 
 router.post("/", auth, async (req, res) => {
   const { error } = validateVideoPost(req.body);
-  if (error) return res.status(400).send(_.map(error.details, "message"));
+  if (error)
+    return res
+      .status(400)
+      .send("Download Failed.\n" + error.details[0].message);
+
+  if (!req.body.link.includes("youtu"))
+    return res.status(400).send("Download Failed.\nNot a youtube video.");
 
   const video = ytdl(req.body.link);
 
   video.on("error", () =>
-    res.status(404).send(["Unable to download. Video not found"])
+    res.status(404).send("Download Failed.\nInvalid link. Video not found.")
   );
 
   video.on("info", async info => {
@@ -178,7 +184,7 @@ function validateVideoPost(videoParams) {
     alternateAlbumArt: joi.string()
   };
 
-  return joi.validate(videoParams, schema, { abortEarly: false });
+  return joi.validate(videoParams, schema);
 }
 
 function validateVideoPut(videoParams) {

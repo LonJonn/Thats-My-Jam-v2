@@ -78,9 +78,10 @@ export default {
 
         this.$socket.emit("startVideoDownload", response.data);
       } catch (error) {
+        const errMsg = error.response.data.split("\n");
         swal({
-          title: "Bwahhh!",
-          html: "<b>Invalid Link!</b><br>Video not found...",
+          title: errMsg[0],
+          text: errMsg[1],
           type: "error"
         });
       }
