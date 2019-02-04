@@ -4,6 +4,7 @@ const fs = require("fs").promises;
 const _ = require("lodash");
 const sanitise = require("sanitize-filename");
 const joi = require("joi");
+const fetch = require("node-fetch");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const { videoObj, Video } = require("../models/videoModel");
@@ -52,10 +53,21 @@ router.post("/", auth, async (req, res) => {
   if (!req.body.link.includes("youtu"))
     return res.status(400).send("Download Failed.\nNot a youtube video.");
 
+  if (req.body.alternateAlbumArt) {
+    try {
+      const link = await fetch(req.body.alternateAlbumArt);
+      if (!link.headers.get("content-type").startsWith("image"))
+        return res.status(400).send("Download Failed.\nNot Image");
+    } catch (error) {
+      console.error("\x1b[31m", "ALT IMAGE ERROR:", error.message);
+      return res.status(400).send("Download Failed.\nBad Link.");
+    }
+  }
+
   const video = ytdl(req.body.link);
 
   video.on("error", () =>
-    res.status(404).send("Download Failed.\nInvalid link. Video not found.")
+    res.status(404).send("Download Failed.\nInvalid link or video not found.")
   );
 
   video.on("info", async info => {
