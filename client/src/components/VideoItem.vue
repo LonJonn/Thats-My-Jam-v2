@@ -57,7 +57,7 @@ export default {
       try {
         await VideosService.deleteVideo(videoId);
       } catch (error) {
-        errMsg = error.response.data.split("\n");
+        errMsg = error.response.data;
       }
 
       if (!errMsg) {
@@ -72,7 +72,7 @@ export default {
         return this.$emit("refreshList");
       }
 
-      if (errMsg[1] == "Files missing on server.") {
+      if (errMsg.info == "Files missing on server.") {
         result = await swal({
           title: "Files missing on server.",
           text: "Do you want to remove the video anyways?",
@@ -89,8 +89,8 @@ export default {
       }
 
       swal({
-        title: errMsg[0],
-        text: errMsg[1],
+        title: errMsg.msg,
+        text: errMsg.info,
         type: "error"
       });
     }

@@ -38,6 +38,10 @@ export default {
     };
   },
   sockets: {
+    downloadInfo: function(info) {
+      this.downloadInfo = info;
+    },
+
     downloadFinished: function() {
       swal({
         title: "Download Finished!",
@@ -48,10 +52,6 @@ export default {
         showConfirmButton: false
       });
       this.downloadInfo = null;
-    },
-
-    downloadInfo: function(info) {
-      this.downloadInfo = info;
     }
   },
 
@@ -77,19 +77,21 @@ export default {
         });
 
         this.$socket.emit("startVideoDownload", response.data);
+
+        this.link = "";
+        this.title = "";
+        this.artist = "";
+        this.alternateAlbumArt = "";
       } catch (error) {
-        const errMsg = error.response.data.split("\n");
+        const errMsg = error.response.data;
         swal({
-          title: errMsg[0],
-          text: errMsg[1],
+          title: errMsg.msg,
+          text: errMsg.info,
           type: "error"
         });
       }
+
       this.searching = false;
-      this.link = "";
-      this.title = "";
-      this.artist = "";
-      this.alternateAlbumArt = "";
     },
 
     pick: function(object, array) {

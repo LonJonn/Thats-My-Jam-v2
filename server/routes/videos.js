@@ -48,26 +48,37 @@ router.post("/", auth, async (req, res) => {
   if (error)
     return res
       .status(400)
-      .send("Download Failed.\n" + error.details[0].message);
+      .send({ msg: "Download Failed.", info: error.details[0].message });
 
   if (!req.body.link.includes("youtu"))
-    return res.status(400).send("Download Failed.\nNot a youtube video.");
+    return res
+      .status(400)
+      .send({ msg: "Download Failed.", info: "Not a youtube video." });
 
   if (req.body.alternateAlbumArt) {
     try {
       const link = await fetch(req.body.alternateAlbumArt);
       if (!link.headers.get("content-type").startsWith("image"))
-        return res.status(400).send("Download Failed.\nNot Image");
+        return res.status(400).send({
+          msg: "Download Failed.",
+          info: "Provided album art is not an image."
+        });
     } catch (error) {
       console.error("\x1b[31m", "ALT IMAGE ERROR:", error.message);
-      return res.status(400).send("Download Failed.\nBad Link.");
+      return res.status(400).send({
+        msg: "Download Failed.",
+        info: "Provided album art link is invalid."
+      });
     }
   }
 
   const video = ytdl(req.body.link);
 
   video.on("error", () =>
-    res.status(404).send("Download Failed.\nInvalid link or video not found.")
+    res.status(404).send({
+      msg: "Download Failed.",
+      info: "Invalid link or video not found."
+    })
   );
 
   video.on("info", async info => {
@@ -102,19 +113,23 @@ router.delete("/:videoId", auth, async (req, res) => {
   try {
     foundVideo = await Video.findById(videoId);
   } catch (error) {
-    return res.status(400).send("Unable to delete.\nInvalid video ID.");
+    return res
+      .status(400)
+      .send({ msg: "Unable to delete.", info: "Invalid video ID." });
   }
 
   if (!foundVideo)
-    return res
-      .status(404)
-      .send("Unable to delete.\nVideo does not exist on databsae");
+    return res.status(404).send({
+      msg: "Unable to delete.",
+      info: "Video does not exist on databsae"
+    });
 
   owner = await checkOwner(req);
   if (!owner)
-    return res
-      .status(401)
-      .send("Access denied.\nYou don't have permission to delete this video.");
+    return res.status(401).send({
+      msg: "Access denied.",
+      info: "You don't have permission to delete this video."
+    });
 
   try {
     await Promise.all([
@@ -122,7 +137,9 @@ router.delete("/:videoId", auth, async (req, res) => {
       fs.unlink(path.join(__dirname, "../static/files/", videoId + ".jpg"))
     ]);
   } catch (error) {
-    return res.status(400).send("Unable to delete.\nFiles missing on server.");
+    return res
+      .status(400)
+      .send({ msg: "Unable to delete.", info: "Files missing on server." });
   }
 
   removeVideoData(req, foundVideo, owner);
