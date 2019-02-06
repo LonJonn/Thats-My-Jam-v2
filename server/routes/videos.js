@@ -74,12 +74,13 @@ router.post("/", auth, async (req, res) => {
 
   const video = ytdl(req.body.link);
 
-  video.on("error", () =>
+  video.on("error", error => {
+    console.error("\x1b[31m", "YTDL ERROR:", error.message);
     res.status(404).send({
       msg: "Download Failed.",
       info: "Invalid link or video not found."
-    })
-  );
+    });
+  });
 
   video.on("info", async info => {
     const metadata = setRequestData(req.body, info);

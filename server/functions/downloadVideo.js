@@ -4,15 +4,14 @@ const path = require("path");
 const fetch = require("node-fetch");
 
 async function downloadVideo(metadata, client) {
-  const saveDir = path.join(__dirname, "../static/files/");
   let { title, size, _id, albumArt, alternateAlbumArt, href } = metadata;
   if (alternateAlbumArt) albumArt = alternateAlbumArt;
 
   console.log("\x1b[35m%s\x1b[0m", "[Download Started]\n" + title);
   console.log("Size:", size, "mb");
 
-  const videoDir = saveDir + _id + ".mp4";
-  const thumbDir = saveDir + _id + ".jpg";
+  const videoDir = path.join(__dirname, "../static/files/", _id + ".mp4");
+  const thumbDir = path.join(__dirname, "../static/files/", _id + ".jpg");
 
   (await fetch(albumArt)).body.pipe(write(thumbDir));
   const video = (await fetch(href)).body.pipe(write(videoDir));
