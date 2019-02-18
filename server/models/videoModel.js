@@ -25,7 +25,7 @@ const videoObj = {
     type: String,
     required: true
   },
-  alternateAlbumArt: {
+  altAlbumArt: {
     type: String
   },
   videoId: {

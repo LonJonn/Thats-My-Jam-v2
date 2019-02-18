@@ -55,9 +55,9 @@ router.post("/", auth, async (req, res) => {
       .status(400)
       .send({ msg: "Download Failed.", info: "Not a youtube video." });
 
-  if (req.body.alternateAlbumArt) {
+  if (req.body.altAlbumArt) {
     try {
-      const link = await fetch(req.body.alternateAlbumArt);
+      const link = await fetch(req.body.altAlbumArt);
       if (!link.headers.get("content-type").startsWith("image"))
         return res.status(400).send({
           msg: "Download Failed.",
@@ -211,7 +211,7 @@ function validateVideoPost(videoParams) {
     link: joi.string().required(),
     title: joi.string(),
     artist: joi.string(),
-    alternateAlbumArt: joi.string()
+    altAlbumArt: joi.string()
   };
 
   return joi.validate(videoParams, schema);

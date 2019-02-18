@@ -4,7 +4,7 @@
     <input placeholder="Enter your link here!" v-model="link" /><br />
     <input placeholder="Title!" v-model="title" /><br />
     <input placeholder="Artist!" v-model="artist" /><br />
-    <input placeholder="Album Art!" v-model="alternateAlbumArt" /><br /><br />
+    <input placeholder="Album Art!" v-model="altAlbumArt" /><br /><br />
     <a @click="downloadVideo" class="button">Download</a>
     <div v-show="searching"><br />Getting Info...</div>
     <div id="downloadInfo">
@@ -32,7 +32,7 @@ export default {
       link: "",
       title: "",
       artist: "",
-      alternateAlbumArt: "",
+      altAlbumArt: "",
       searching: false,
       downloadInfo: null
     };
@@ -63,7 +63,7 @@ export default {
           "link",
           "title",
           "artist",
-          "alternateAlbumArt"
+          "altAlbumArt"
         ]);
         const response = await VideosService.downloadVideo(filtered);
 
@@ -81,7 +81,7 @@ export default {
         this.link = "";
         this.title = "";
         this.artist = "";
-        this.alternateAlbumArt = "";
+        this.altAlbumArt = "";
       } catch (error) {
         const errMsg = error.response.data;
         swal({
