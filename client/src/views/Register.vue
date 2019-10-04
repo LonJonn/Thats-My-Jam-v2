@@ -51,8 +51,8 @@ export default {
           isAdmin: this.isAdmin
         });
         this.errors = [];
-      } catch (error) {
-        this.errors = error.response.data;
+      } catch (err) {
+        this.errors = err.response.data;
       }
     },
     getAvailable: async function() {

@@ -7,6 +7,7 @@ const videosRoute = require("./routes/videos");
 const usersRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const express = require("express");
+const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
 
@@ -24,6 +25,7 @@ mongoose
   .catch(err => console.error(err));
 
 app.use(cors());
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.static("static"));
 app.use("/api/videos", videosRoute);

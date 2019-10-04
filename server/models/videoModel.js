@@ -25,7 +25,7 @@ const videoObj = {
     type: String,
     required: true
   },
-  alternateAlbumArt: {
+  altAlbumArt: {
     type: String
   },
   videoId: {
@@ -40,10 +40,6 @@ const videoObj = {
   size: {
     // in mb
     type: Number,
-    required: true
-  },
-  href: {
-    type: String,
     required: true
   }
 };

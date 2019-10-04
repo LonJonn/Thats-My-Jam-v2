@@ -4,6 +4,7 @@ const fs = require("fs").promises;
 const _ = require("lodash");
 const sanitise = require("sanitize-filename");
 const joi = require("joi");
+const fetch = require("node-fetch");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const { videoObj, Video } = require("../models/videoModel");
@@ -44,13 +45,42 @@ router.get("/:videoId", auth, async (req, res) => {
 
 router.post("/", auth, async (req, res) => {
   const { error } = validateVideoPost(req.body);
-  if (error) return res.status(400).send(_.map(error.details, "message"));
+  if (error)
+    return res
+      .status(400)
+      .send({ msg: "Download Failed.", info: error.details[0].message });
+
+  if (!req.body.link.includes("youtu"))
+    return res
+      .status(400)
+      .send({ msg: "Download Failed.", info: "Not a youtube video." });
+
+  if (req.body.altAlbumArt) {
+    try {
+      const link = await fetch(req.body.altAlbumArt);
+      if (!link.headers.get("content-type").startsWith("image"))
+        return res.status(400).send({
+          msg: "Download Failed.",
+          info: "Provided album art is not an image."
+        });
+    } catch (error) {
+      console.error("\x1b[31m", "ALT IMAGE ERROR:", error.message);
+      return res.status(400).send({
+        msg: "Download Failed.",
+        info: "Provided album art link is invalid."
+      });
+    }
+  }
 
   const video = ytdl(req.body.link);
 
-  video.on("error", () =>
-    res.status(404).send(["Unable to download. Video not found"])
-  );
+  video.on("error", error => {
+    console.error("\x1b[31m", "YTDL ERROR:", error.message);
+    res.status(404).send({
+      msg: "Download Failed.",
+      info: "Invalid link or video not found."
+    });
+  });
 
   video.on("info", async info => {
     const metadata = setRequestData(req.body, info);
@@ -84,19 +114,23 @@ router.delete("/:videoId", auth, async (req, res) => {
   try {
     foundVideo = await Video.findById(videoId);
   } catch (error) {
-    return res.status(400).send("Unable to delete.\nInvalid video ID.");
+    return res
+      .status(400)
+      .send({ msg: "Unable to delete.", info: "Invalid video ID." });
   }
 
   if (!foundVideo)
-    return res
-      .status(404)
-      .send("Unable to delete.\nVideo does not exist on databsae");
+    return res.status(404).send({
+      msg: "Unable to delete.",
+      info: "Video does not exist on databsae"
+    });
 
   owner = await checkOwner(req);
   if (!owner)
-    return res
-      .status(401)
-      .send("Access denied.\nYou don't have permission to delete this video.");
+    return res.status(401).send({
+      msg: "Access denied.",
+      info: "You don't have permission to delete this video."
+    });
 
   try {
     await Promise.all([
@@ -104,7 +138,9 @@ router.delete("/:videoId", auth, async (req, res) => {
       fs.unlink(path.join(__dirname, "../static/files/", videoId + ".jpg"))
     ]);
   } catch (error) {
-    return res.status(400).send("Unable to delete.\nFiles missing on server.");
+    return res
+      .status(400)
+      .send({ msg: "Unable to delete.", info: "Files missing on server." });
   }
 
   removeVideoData(req, foundVideo, owner);
@@ -175,10 +211,10 @@ function validateVideoPost(videoParams) {
     link: joi.string().required(),
     title: joi.string(),
     artist: joi.string(),
-    alternateAlbumArt: joi.string()
+    altAlbumArt: joi.string()
   };
 
-  return joi.validate(videoParams, schema, { abortEarly: false });
+  return joi.validate(videoParams, schema);
 }
 
 function validateVideoPut(videoParams) {

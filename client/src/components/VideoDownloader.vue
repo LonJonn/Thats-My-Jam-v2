@@ -4,7 +4,7 @@
     <input placeholder="Enter your link here!" v-model="link" /><br />
     <input placeholder="Title!" v-model="title" /><br />
     <input placeholder="Artist!" v-model="artist" /><br />
-    <input placeholder="Album Art!" v-model="alternateAlbumArt" /><br /><br />
+    <input placeholder="Album Art!" v-model="altAlbumArt" /><br /><br />
     <a @click="downloadVideo" class="button">Download</a>
     <div v-show="searching"><br />Getting Info...</div>
     <div id="downloadInfo">
@@ -32,12 +32,16 @@ export default {
       link: "",
       title: "",
       artist: "",
-      alternateAlbumArt: "",
+      altAlbumArt: "",
       searching: false,
       downloadInfo: null
     };
   },
   sockets: {
+    downloadInfo: function(info) {
+      this.downloadInfo = info;
+    },
+
     downloadFinished: function() {
       swal({
         title: "Download Finished!",
@@ -48,10 +52,6 @@ export default {
         showConfirmButton: false
       });
       this.downloadInfo = null;
-    },
-
-    downloadInfo: function(info) {
-      this.downloadInfo = info;
     }
   },
 
@@ -63,7 +63,7 @@ export default {
           "link",
           "title",
           "artist",
-          "alternateAlbumArt"
+          "altAlbumArt"
         ]);
         const response = await VideosService.downloadVideo(filtered);
 
@@ -77,18 +77,21 @@ export default {
         });
 
         this.$socket.emit("startVideoDownload", response.data);
+
+        this.link = "";
+        this.title = "";
+        this.artist = "";
+        this.altAlbumArt = "";
       } catch (error) {
+        const errMsg = error.response.data;
         swal({
-          title: "Bwahhh!",
-          html: "<b>Invalid Link!</b><br>Video not found...",
+          title: errMsg.msg,
+          text: errMsg.info,
           type: "error"
         });
       }
+
       this.searching = false;
-      this.link = "";
-      this.title = "";
-      this.artist = "";
-      this.alternateAlbumArt = "";
     },
 
     pick: function(object, array) {

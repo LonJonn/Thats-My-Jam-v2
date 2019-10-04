@@ -26,7 +26,7 @@ const main = async function() {
   if (JWToken)
     try {
       await store.dispatch("logIn", JWToken);
-    } catch (err) {
+    } catch (error) {
       localStorage.removeItem("JWToken");
     }
 

@@ -9,8 +9,7 @@
     <a :href="'http://youtube.com/watch?v=' + videoObj.videoId">Youtube</a> -
     <a :href="rootUrl + videoObj._id + '.mp4'">open video</a> -
     <a :href="rootUrl + videoObj._id + '.jpg'">open img</a> -
-    <a class="has-text-danger" @click="deleteVideo(videoObj._id)">delete</a> |
-    <a class="has-text-info" @click="redownload(videoObj)"> redownload </a>
+    <a class="has-text-danger" @click="deleteVideo(videoObj._id)">delete</a>
     <hr />
   </div>
 </template>
@@ -58,7 +57,7 @@ export default {
       try {
         await VideosService.deleteVideo(videoId);
       } catch (error) {
-        errMsg = error.response.data.split("\n");
+        errMsg = error.response.data;
       }
 
       if (!errMsg) {
@@ -73,7 +72,7 @@ export default {
         return this.$emit("refreshList");
       }
 
-      if (errMsg[1] == "Files missing on server.") {
+      if (errMsg.info == "Files missing on server.") {
         result = await swal({
           title: "Files missing on server.",
           text: "Do you want to remove the video anyways?",
@@ -90,22 +89,10 @@ export default {
       }
 
       swal({
-        title: errMsg[0],
-        text: errMsg[1],
+        title: errMsg.msg,
+        text: errMsg.info,
         type: "error"
       });
-    },
-
-    redownload: function(metadata) {
-      swal({
-        title: "Download Starting...",
-        type: "success",
-        toast: true,
-        timer: 4000,
-        position: "top-end",
-        showConfirmButton: false
-      });
-      this.$socket.emit("startVideoDownload", metadata);
     }
   }
 };
