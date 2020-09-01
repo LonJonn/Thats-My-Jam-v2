@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "buefy": "^0.7.1",
+    "buefy": "^0.7.2",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.2.2",
